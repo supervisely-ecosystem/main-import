@@ -1,10 +1,9 @@
-
 import os
-import supervisely as sly
-from supervisely.convert.converter import ImportManager
 
 from dotenv import load_dotenv
 
+import supervisely as sly
+from supervisely.convert.converter import ImportManager
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -32,7 +31,7 @@ else:
 
 
 # * 2. Get input path and download data
-src_dir = "path/to/download"
+src_dir = "data"
 api.file.download_input(src_dir)
 # check if files in src_dir are an archive and unpack them if so
 # listdir = os.listdir(src_dir)
@@ -61,11 +60,11 @@ meta = converter.get_meta()
 # project_meta = project_meta.merge(ds_meta) # ? could be conflicts
 
 # * 5. List items (return image-ann mapping)
-items = converter.get_items(resolve_conflicts=True) # ! generator
-# {"item_name.jpg": {"image": "path/to/item_name.jpg", "ann": "path/to/item_name.jpg.json"}, ...}
+items = converter.get_items(resolve_conflicts=True)  # ! generator
+# {"item_name.jpg": {"item": "path/to/item_name.jpg", "ann": "path/to/item_name.jpg.json"}, ...}
 # # or
 # items = converter.get_items()
-# items = converter.get_anns()
+# anns = converter.get_anns()
 
 
 # * 6. Preview sample
@@ -84,10 +83,10 @@ for i in range(5):
 
 
 # * 7 Convert and upload
-    
+
 ## * Option 1: convert all data to supervisely format locally and then upload dataset
 sly_dataset = "path/to/supervisely"
-converter.all_to_supervisely(sly_dataset) # convert all data to supervisely format locally
+converter.all_to_supervisely(sly_dataset)  # convert all data to supervisely format locally
 api.dataset.upload(dataset.id, sly_dataset)  # ? need new SDK method for this
 
 ## * Option 2: simple upload data (all processing will be done inside the SDK)
