@@ -60,10 +60,10 @@ meta = converter.get_meta()
 # project_meta = project_meta.merge(ds_meta) # ? could be conflicts
 
 # * 5. List items (return image-ann mapping)
-items = converter.get_items(resolve_conflicts=True) # by default
+items = converter.get_items(resolve_conflicts=True) # ! generator
 # {"item_name.jpg": {"image": "path/to/item_name.jpg", "ann": "path/to/item_name.jpg.json"}, ...}
 # # or
-# items = converter.get_images()
+# items = converter.get_items()
 # items = converter.get_anns()
 
 
@@ -95,16 +95,12 @@ importer.upload_dataset(dataset.id, sly_dataset)
 ## * Option 3: upload data in batches
 meta = converter.get_meta()
 items = converter.get_items()
-for batch in sly.batched(items, batch_size=50):
-    item_names = list(batch.keys())
-    img_paths = [item["image"] for item in batch]
-    ann_paths = [item["ann"] for item in batch]
-
-    anns = []
-    for img_path, ann_path in zip(img_paths, ann_paths):
-        ann = converter.to_supervisely(img_path, ann_path, meta)
-        anns.append(ann)
-
-    img_infos = api.image.upload_paths(dataset.id, item_names, img_paths)
-    img_ids = [img_info.id for img_info in img_infos]
-    api.annotation.upload_anns(img_ids, anns)
+anns = []
+for item_path, ann_path in converter:
+    ann = converter.to_supervisely(img_path, ann_path, meta)
+    anns.append(ann)
+    if len(anns) > 50:
+        img_infos = api.image.upload_paths(dataset.id, item_names, img_paths)
+        img_ids = [img_info.id for img_info in img_infos]
+        api.annotation.upload_anns(img_ids, anns)
+        anns = []
