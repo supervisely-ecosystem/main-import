@@ -1,6 +1,7 @@
 
 import os
 import supervisely as sly
+from supervisely.convert.converter import ImportManager
 
 from dotenv import load_dotenv
 
@@ -44,7 +45,7 @@ api.file.download_input(src_dir)
 
 
 # * 3. initialize importer and get converter
-importer = sly.ImportManager(src_dir)
+importer = ImportManager(src_dir)
 converter = importer.get_converter()
 # or
 # converter = sly.Converter.get_converter(input_path)
