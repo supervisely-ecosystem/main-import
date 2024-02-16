@@ -2,3 +2,4 @@
 .venv
 supervisely
 data
+storage
