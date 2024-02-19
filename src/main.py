@@ -104,3 +104,8 @@ for item_path, ann_path in converter:
         img_ids = [img_info.id for img_info in img_infos]
         api.annotation.upload_anns(img_ids, anns)
         anns = []
+
+
+# TODO list:
+# - [ ] self._annotations – check if it is necessary (or remove it)
+# - [ ] global var MODALITY, optimize detect_modality

@@ -15,6 +15,8 @@ api = sly.Api()
 team_id = sly.env.team_id()
 workspace_id = sly.env.workspace_id()
 project_id = sly.env.project_id(raise_not_found=False)
+project_modality = "images"  # sly.env.project_modality()
+
 if project_id is None:
     project = api.project.create(workspace_id, "converted data", change_name_if_conflict=True)
     project_id = project.id
@@ -26,9 +28,7 @@ if dataset_id is None:
 
 src_dir = "data"
 
-
-# * 3. initialize importer and get converter
-importer = ImportManager(src_dir)
+importer = ImportManager(src_dir, project_modality)
 converter = importer.converter
 
 meta = converter.get_meta()
