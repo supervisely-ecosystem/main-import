@@ -109,3 +109,5 @@ for item_path, ann_path in converter:
 # TODO list:
 # - [ ] self._annotations – check if it is necessary (or remove it)
 # - [ ] global var MODALITY, optimize detect_modality
+# - [ ] configure convenient module import (ex: import supervisely.convert.image.COCOFORMAT)
+# - [ ] rename file converter.py? rename class ImportManager?

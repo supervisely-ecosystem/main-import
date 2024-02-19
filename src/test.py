@@ -37,21 +37,27 @@ if project_id is not None:
     meta_json = api.project.get_meta(project_id)
     project_meta = sly.ProjectMeta.from_json(meta_json)
 
-meta = project_meta.merge(meta)
-api.project.update_meta(project_id, meta.to_json())
+importer.upload_dataset(dataset_id)
 
 
-item_names = []
-item_paths = []
-anns = []
-for item in converter.items:
-    ann = converter.to_supervisely(item, meta)
-    item_names.append(item.name)
-    item_paths.append(item.path)
-    anns.append(ann)
-    # if len(anns) > 50:
+# 1. importer creates a converter
+# 2. converter detecting format (in validate_format)
+# 3. get necessary info from input dir
+# 3.1. count annotations (validate_format returns False if 0)
+# 3.2. attempting to find key file and validate it
+# 3.3. iterate over files and folders in the input dirs to create list of images and dict with anns {file_name: path}
+# 3.4. read existing ProjectMeta or create empty ProjectMeta
+# 4. converter create items
+# 4.1. create Item with path to image
+# 4.2. attempting to match Item.name to ann_dict keys
+# 4.3. if ann_data is found, validate it, if success, add ann_data to Item
+# 4.3. if self._meta doesn't exist, generate meta from annotation and update meta from each found annotation
+# 4.4. add created Item to self._items
+# 4.5 count detected annotations
+# 5. validate_format method should return True or False based on detected annotations count
 
-img_infos = api.image.upload_paths(dataset_id, item_names, item_paths)
-img_ids = [img_info.id for img_info in img_infos]
-api.annotation.upload_anns(img_ids, anns)
-anns = []
+
+# validate_format:
+# - prepare meta
+# - update self._items with items (match annotation if exists)
+# - return True if annotations found, False if not
