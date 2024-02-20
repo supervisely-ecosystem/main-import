@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 
 import supervisely as sly
-from supervisely.convert.converter import ImportManager
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -15,31 +14,35 @@ api = sly.Api()
 team_id = sly.env.team_id()
 workspace_id = sly.env.workspace_id()
 project_id = sly.env.project_id(raise_not_found=False)
-project_modality = "images"  # sly.env.project_modality()
+dataset_id = sly.env.dataset_id(raise_not_found=False)
+
+project_modality = sly.ProjectType.IMAGES  # sly.env.project_modality()
+
+
+src_dir = "data" # "video" # "pcd"
+
+importer = sly.ImportManager(src_dir, project_modality)
 
 if project_id is None:
-    project = api.project.create(workspace_id, "converted data", change_name_if_conflict=True)
+    project = api.project.create(
+        workspace_id,
+        "new converted data",
+        change_name_if_conflict=True,
+        type=project_modality,
+    )
     project_id = project.id
 
-dataset_id = sly.env.dataset_id(raise_not_found=False)
 if dataset_id is None:
-    dataset = api.dataset.create(project_id, "converted data ds", change_name_if_conflict=True)
+    dataset = api.dataset.create(
+        project_id, "converted data ds", change_name_if_conflict=True
+    )
     dataset_id = dataset.id
 
-src_dir = "data"
-
-importer = ImportManager(src_dir, project_modality)
-converter = importer.converter
-
-meta = converter.get_meta()
-if project_id is not None:
-    project = api.project.get_info_by_id(project_id)
-    meta_json = api.project.get_meta(project_id)
-    project_meta = sly.ProjectMeta.from_json(meta_json)
 
 importer.upload_dataset(dataset_id)
 
 
+# steps:
 # 1. importer creates a converter
 # 2. converter detecting format (in validate_format)
 # 3. get necessary info from input dir
