@@ -2,4 +2,5 @@
 .venv
 supervisely
 data
+data_video
 storage
