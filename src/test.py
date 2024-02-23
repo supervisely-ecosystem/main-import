@@ -11,36 +11,46 @@ if sly.is_development():
 
 api = sly.Api()
 
-team_id = sly.env.team_id()
+team_id = sly.env.team_id() # use team ID: 559 to get test data
 workspace_id = sly.env.workspace_id()
-project_id = sly.env.project_id(raise_not_found=False)
-dataset_id = sly.env.dataset_id(raise_not_found=False)
-
-project_modality = sly.ProjectType.IMAGES  # sly.env.project_modality()
 
 
-src_dir = "data" # "video" # "pcd"
-
-importer = sly.ImportManager(src_dir, project_modality)
-
-if project_id is None:
+def start_import(src_dir, project_name, project_modality):
+    importer = sly.ImportManager(src_dir, project_modality)
     project = api.project.create(
         workspace_id,
-        "new converted data",
+        project_name,
         change_name_if_conflict=True,
         type=project_modality,
     )
-    project_id = project.id
+    dataset = api.dataset.create(project.id, "ds0", change_name_if_conflict=True)
 
-if dataset_id is None:
-    dataset = api.dataset.create(
-        project_id, "converted data ds", change_name_if_conflict=True
-    )
-    dataset_id = dataset.id
+    importer.upload_dataset(dataset.id)
 
 
-importer.upload_dataset(dataset_id)
+# UPLOAD ALL TEST FOLDERS
+test_dir = "/TESTS"
+if sly.fs.dir_exists(test_dir):
+    test_dirs = sorted(os.listdir(test_dir))
+elif api.file.dir_exists(team_id, test_dir):
+    test_dirs = api.file.listdir(team_id, test_dir)
+else:
+    exit(0)
 
+
+for project_type in sly.ProjectType:
+    for path in test_dirs:
+        if str(project_type) in path:
+            project_name = os.path.basename(path.rstrip("/"))
+            start_import(path, project_name, project_type)
+
+
+# # UPLOAD SINGLE FOLDER
+# project_id = sly.env.project_id(raise_not_found=False)
+# dataset_id = sly.env.dataset_id(raise_not_found=False)
+# project_modality = sly.ProjectType.POINT_CLOUD_EPISODES  # sly.env.project_modality()
+# src_dir = "images"
+# start_import(src_dir, "new converted data", project_modality)
 
 # steps:
 # 1. importer creates a converter
