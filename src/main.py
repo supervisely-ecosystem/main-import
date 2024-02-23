@@ -111,3 +111,4 @@ for item_path, ann_path in converter:
 # - [ ] global var MODALITY, optimize detect_modality
 # - [ ] configure convenient module import (ex: import supervisely.convert.image.COCOFORMAT)
 # - [ ] rename file converter.py? rename class ImportManager?
+# - [ ] rename images (items) if exists in the dataset (while uploading)
