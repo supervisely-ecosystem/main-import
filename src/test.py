@@ -11,7 +11,7 @@ if sly.is_development():
 
 api = sly.Api()
 
-team_id = sly.env.team_id() # use team ID: 559 to get test data
+team_id = sly.env.team_id()  # use team ID: 447 to get test data
 workspace_id = sly.env.workspace_id()
 
 
@@ -28,7 +28,7 @@ def start_import(src_dir, project_name, project_modality):
     importer.upload_dataset(dataset.id)
 
 
-# UPLOAD ALL TEST FOLDERS
+# # UPLOAD ALL TEST FOLDERS
 test_dir = "/TESTS"
 if sly.fs.dir_exists(test_dir):
     test_dirs = sorted(os.listdir(test_dir))
@@ -48,7 +48,7 @@ for project_type in sly.ProjectType:
 # # UPLOAD SINGLE FOLDER
 # project_id = sly.env.project_id(raise_not_found=False)
 # dataset_id = sly.env.dataset_id(raise_not_found=False)
-# project_modality = sly.ProjectType.POINT_CLOUD_EPISODES  # sly.env.project_modality()
+# project_modality = sly.ProjectType.IMAGES  # sly.env.project_modality()
 # src_dir = "images"
 # start_import(src_dir, "new converted data", project_modality)
 
