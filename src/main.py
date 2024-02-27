@@ -20,7 +20,7 @@ team_id = sly.env.team_id()
 project_id = sly.env.project_id()
 dataset_id = sly.env.dataset_id(raise_not_found=False)
 task_id = sly.env.task_id()
-dataset_name = os.environ.get("datasetName", "ds0")
+dataset_name = os.environ.get("modal.state.datasetName", "ds0")
 
 src_dir = sly.env.folder()
 
