@@ -17,6 +17,7 @@ workspace_id = sly.env.workspace_id()
 team_id = sly.env.team_id()
 project_id = sly.env.project_id()
 dataset_id = sly.env.dataset_id(raise_not_found=False)
+task_id = sly.env.task_id()
 
 src_dir = sly.env.folder()
 
@@ -37,6 +38,9 @@ importer = ImportManager(src_dir, project_modality)
 
 # * 3 Convert and upload
 importer.upload_dataset(dataset.id)
+
+# * 4. Set output project
+api.task.set_output_project(task_id, project.id)
 
 # TODO list:
 # - [ ] self._annotations – check if it is necessary (or remove it)
