@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 
 import supervisely as sly
+from supervisely.convert import ImportManager
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -32,7 +33,7 @@ project_modality = project.type
 
 
 # * 2. initialize importer
-importer = sly.ImportManager(src_dir, project_modality)
+importer = ImportManager(src_dir, project_modality)
 
 # * 3 Convert and upload
 importer.upload_dataset(dataset.id)
