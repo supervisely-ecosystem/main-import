@@ -15,7 +15,7 @@ api = sly.Api()
 workspace_id = sly.env.workspace_id()
 team_id = sly.env.team_id()
 project_id = sly.env.project_id()
-dataset_id = sly.env.dataset_id()
+dataset_id = sly.env.dataset_id(raise_not_found=False)
 
 src_dir = sly.env.folder()
 
