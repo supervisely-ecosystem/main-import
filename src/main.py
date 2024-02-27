@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 import supervisely as sly
-from supervisely.convert import ImportManager
+from supervisely.convert.converter import ImportManager
 
 if sly.is_development():
     load_dotenv("local.env")
