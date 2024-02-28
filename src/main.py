@@ -43,7 +43,8 @@ importer = ImportManager(src_dir, project_modality)
 importer.upload_dataset(dataset.id)
 
 # * 4. Set output project
-api.task.set_output_project(task_id, project.id)
+output_title = f"{project.name}. New dataset: {dataset.name}"
+api.task.set_output_project(task_id, project.id, output_title)
 
 # * 5. Clean app_data directory
 sly.fs.clean_dir(app_data)
