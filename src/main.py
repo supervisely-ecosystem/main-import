@@ -12,7 +12,7 @@ app_data = sly.app.get_data_dir()
 sly.fs.clean_dir(app_data)
 api = sly.Api()
 task_id = sly.env.task_id()
-
+team_id = workspace_id = project_id = dataset_id = project_modality = src_dir = None
 
 def handle_exception(exc: Exception, msg: str = "Error"):
     from supervisely.io.exception_handlers import (
@@ -26,6 +26,12 @@ def handle_exception(exc: Exception, msg: str = "Error"):
     else:
         api.task.set_output_error(task_id, msg, repr(exc))
         sly.logger.error(f"{msg}. {repr(exc)}")
+    sly.logger.info(
+        f"Debug info:\n"
+        f"    team_id={team_id}\n    workspace_id={workspace_id}\n"
+        f"    project_id={project_id}\n    dataset_id={dataset_id}\n"
+        f"    project_modality={project_modality}\n    src_dir={src_dir}\n"
+    )
     exit(0)
 
 
