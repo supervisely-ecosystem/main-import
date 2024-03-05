@@ -1,9 +1,7 @@
 import os
 
-from dotenv import load_dotenv
-
-import src.functions as f
 import supervisely as sly
+from dotenv import load_dotenv
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -13,9 +11,24 @@ if sly.is_development():
 app_data = sly.app.get_data_dir()
 sly.fs.clean_dir(app_data)
 api = sly.Api()
+task_id = sly.env.task_id()
+
+
+def handle_exception(exc: Exception, msg: str = "Error"):
+    from supervisely.io.exception_handlers import (
+        handle_exception as sly_handle_exception,
+    )
+
+    handled_exc = sly_handle_exception(exc)
+    if handled_exc is not None:
+        handled_exc.log_error_for_agent()
+    else:
+        sly.logger.error(f"{msg}. {repr(exc)}")
+        api.task.set_output_error(task_id, msg, repr(exc))
+    exit(0)
+
 
 try:
-    task_id = sly.env.task_id()
     team_id = sly.env.team_id()
     workspace_id = sly.env.workspace_id()
     project_id = sly.env.project_id()
@@ -34,7 +47,7 @@ try:
     project_modality = project.type
 except Exception as e:
     sly.fs.clean_dir(app_data)
-    f.handle_exception(e, "Error occurred. Please, contact support.")
+    handle_exception(e, "Error occurred. Please, contact support.")
 
 
 try:
@@ -42,14 +55,14 @@ try:
     importer = sly.ImportManager(src_dir, project_modality)
 except Exception as e:
     sly.fs.clean_dir(app_data)
-    f.handle_exception(e, "Failed to detect format. Please, check the input data.")
+    handle_exception(e, "Failed to detect format. Please, check the input data.")
 
 try:
     # * 3 Convert and upload
     importer.upload_dataset(dataset.id)
 except Exception as e:
     sly.fs.clean_dir(app_data)
-    f.handle_exception(e, "Failed to convert and upload data. Please, check the logs.")
+    handle_exception(e, "Failed to convert and upload data. Please, check the logs.")
 
 # * 4. Set output project
 output_title = f"{project.name}. New dataset: {dataset.name}"
