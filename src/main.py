@@ -21,10 +21,11 @@ def handle_exception(exc: Exception, msg: str = "Error"):
 
     handled_exc = sly_handle_exception(exc)
     if handled_exc is not None:
+        api.task.set_output_error(task_id, handled_exc.title, handled_exc.message)
         handled_exc.log_error_for_agent()
     else:
-        sly.logger.error(f"{msg}. {repr(exc)}")
         api.task.set_output_error(task_id, msg, repr(exc))
+        sly.logger.error(f"{msg}. {repr(exc)}")
     exit(0)
 
 
