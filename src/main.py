@@ -2,8 +2,8 @@ import os
 
 from dotenv import load_dotenv
 
+import src.functions as f
 import supervisely as sly
-from supervisely.convert.converter import ImportManager
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -14,33 +14,42 @@ app_data = sly.app.get_data_dir()
 sly.fs.clean_dir(app_data)
 api = sly.Api()
 
+try:
+    task_id = sly.env.task_id()
+    team_id = sly.env.team_id()
+    workspace_id = sly.env.workspace_id()
+    project_id = sly.env.project_id()
+    dataset_id = sly.env.dataset_id(raise_not_found=False)
+    dataset_name = os.environ.get("modal.state.datasetName", "ds0")
+    src_dir = sly.env.folder()
 
-workspace_id = sly.env.workspace_id()
-team_id = sly.env.team_id()
-project_id = sly.env.project_id()
-dataset_id = sly.env.dataset_id(raise_not_found=False)
-task_id = sly.env.task_id()
-dataset_name = os.environ.get("modal.state.datasetName", "ds0")
+    # * 1. Get project and dataset infos
+    project = api.project.get_info_by_id(project_id)
+    if dataset_id:
+        dataset = api.dataset.get_info_by_id(dataset_id)
+    else:
+        dataset = api.dataset.create(project.id, dataset_name, change_name_if_conflict=True)
 
-src_dir = sly.env.folder()
-
-
-# * 1. Get project and dataset infos
-project = api.project.get_info_by_id(project_id)
-if dataset_id:
-    dataset = api.dataset.get_info_by_id(dataset_id)
-else:
-    dataset = api.dataset.create(project.id, dataset_name, change_name_if_conflict=True)
-
-project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
-project_modality = project.type
+    project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
+    project_modality = project.type
+except Exception as e:
+    sly.fs.clean_dir(app_data)
+    f.handle_exception(e, "Error occurred. Please, contact support.")
 
 
-# * 2. initialize importer
-importer = ImportManager(src_dir, project_modality)
+try:
+    # * 2. initialize importer
+    importer = sly.ImportManager(src_dir, project_modality)
+except Exception as e:
+    sly.fs.clean_dir(app_data)
+    f.handle_exception(e, "Failed to detect format. Please, check the input data.")
 
-# * 3 Convert and upload
-importer.upload_dataset(dataset.id)
+try:
+    # * 3 Convert and upload
+    importer.upload_dataset(dataset.id)
+except Exception as e:
+    sly.fs.clean_dir(app_data)
+    f.handle_exception(e, "Failed to convert and upload data. Please, check the logs.")
 
 # * 4. Set output project
 output_title = f"{project.name}. New dataset: {dataset.name}"
