@@ -11,4 +11,4 @@ def handle_exception(exc: Exception, msg: str = "Error"):
         handled_exc.log_error_for_agent()
     else:
         sly.logger.error(f"{msg}. {repr(exc)}")
-    exit(1)
+    exit(0)
