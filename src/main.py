@@ -1,87 +1,38 @@
-import os
-
 import supervisely as sly
-from dotenv import load_dotenv
 
-if sly.is_development():
-    load_dotenv("local.env")
-    load_dotenv(os.path.expanduser("~/supervisely.env"))
+import src.functions as f
+import src.globals as g
 
-
-app_data = sly.app.get_data_dir()
-sly.fs.clean_dir(app_data)
-api = sly.Api()
-task_id = sly.env.task_id()
-team_id = workspace_id = project_id = dataset_id = project_modality = src_dir = None
-
-def handle_exception(exc: Exception, msg: str = "Error"):
-    from supervisely.io.exception_handlers import (
-        handle_exception as sly_handle_exception,
-    )
-
-    handled_exc = sly_handle_exception(exc)
-    if handled_exc is not None:
-        api.task.set_output_error(task_id, handled_exc.title, handled_exc.message)
-        handled_exc.log_error_for_agent()
-    else:
-        api.task.set_output_error(task_id, msg, repr(exc))
-        sly.logger.error(f"{msg}. {repr(exc)}")
-    sly.logger.info(
-        f"Debug info:\n"
-        f"    team_id={team_id}\n    workspace_id={workspace_id}\n"
-        f"    project_id={project_id}\n    dataset_id={dataset_id}\n"
-        f"    project_modality={project_modality}\n    src_dir={src_dir}\n"
-    )
-    exit(0)
-
-
+# * 1. Get project and dataset infos
 try:
-    team_id = sly.env.team_id()
-    workspace_id = sly.env.workspace_id()
-    project_id = sly.env.project_id()
-    dataset_id = sly.env.dataset_id(raise_not_found=False)
-    dataset_name = os.environ.get("modal.state.datasetName", "ds0")
-    src_dir = sly.env.folder()
-
-    # * 1. Get project and dataset infos
-    project = api.project.get_info_by_id(project_id)
-    if dataset_id:
-        dataset = api.dataset.get_info_by_id(dataset_id)
+    project = g.api.project.get_info_by_id(g.project_id)
+    if g.dataset_id:
+        dataset = g.api.dataset.get_info_by_id(g.dataset_id)
     else:
-        dataset = api.dataset.create(project.id, dataset_name, change_name_if_conflict=True)
-
-    project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
+        dataset = g.api.dataset.create(project.id, g.dataset_name, change_name_if_conflict=True)
     project_modality = project.type
 except Exception as e:
-    sly.fs.clean_dir(app_data)
-    handle_exception(e, "Error occurred. Please, contact support.")
+    sly.fs.clean_dir(g.app_data)
+    f.handle_exception_and_stop(e, "Error occurred. Please, contact support.")
 
 
+# * 2. initialize importer to detect format
 try:
-    # * 2. initialize importer
-    importer = sly.ImportManager(src_dir, project_modality)
+    importer = sly.ImportManager(g.src_dir, project_modality)
 except Exception as e:
-    sly.fs.clean_dir(app_data)
-    handle_exception(e, "Failed to detect format. Please, check the input data.")
+    sly.fs.clean_dir(g.app_data)
+    f.handle_exception_and_stop(e, "Failed to detect format. Please, check the input data.")
 
+# * 3 Convert and upload data
 try:
-    # * 3 Convert and upload
     importer.upload_dataset(dataset.id)
 except Exception as e:
-    sly.fs.clean_dir(app_data)
-    handle_exception(e, "Failed to convert and upload data. Please, check the logs.")
+    sly.fs.clean_dir(g.app_data)
+    f.handle_exception_and_stop(e, "Failed to convert and upload data. Please, check the logs.")
 
 # * 4. Set output project
 output_title = f"{project.name}. New dataset: {dataset.name}"
-api.task.set_output_project(task_id, project.id, output_title)
+g.api.task.set_output_project(g.task_id, project.id, output_title)
 
 # * 5. Clean app_data directory
-sly.fs.clean_dir(app_data)
-
-
-# TODO list:
-# - [ ] self._annotations – check if it is necessary (or remove it)
-# - [ ] global var MODALITY, optimize detect_modality
-# - [ ] configure convenient module import (ex: import supervisely.convert.image.COCOFORMAT)
-# - [ ] rename file converter.py? rename class ImportManager?
-# - [ ] rename images (items) if exists in the dataset (while uploading)
+sly.fs.clean_dir(g.app_data)
