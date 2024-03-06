@@ -1,8 +1,7 @@
 import os
 
-from dotenv import load_dotenv
-
 import supervisely as sly
+from dotenv import load_dotenv
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -11,7 +10,7 @@ if sly.is_development():
 
 api = sly.Api()
 
-team_id = sly.env.team_id()  # use team ID: 447 to get test data
+team_id = sly.env.team_id()  # test data in team ID:447
 workspace_id = sly.env.workspace_id()
 
 
