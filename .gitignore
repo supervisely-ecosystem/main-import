@@ -6,3 +6,4 @@ data_video
 storage
 TESTS
 temp
+__pycache__
