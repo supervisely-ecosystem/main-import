@@ -4,6 +4,6 @@ supervisely
 data
 data_video
 storage
-TESTS
+test_files
 temp
 __pycache__
