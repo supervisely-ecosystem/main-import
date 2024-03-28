@@ -1,6 +1,5 @@
-import supervisely as sly
-
 import src.globals as g
+import supervisely as sly
 
 
 def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
@@ -13,7 +12,10 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
         g.api.task.set_output_error(g.task_id, handled_exc.title, handled_exc.message)
         handled_exc.log_error_for_agent()
     else:
-        g.api.task.set_output_error(g.task_id, msg, repr(exc))
+        err_msg = repr(exc)
+        if len(err_msg) > 255:
+            err_msg = err_msg[:252] + "..."
+        g.api.task.set_output_error(g.task_id, msg, err_msg)
         sly.logger.error(f"{msg}. {repr(exc)}")
     sly.logger.info(
         f"Debug info:\n"
