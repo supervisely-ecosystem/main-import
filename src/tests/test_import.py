@@ -1,7 +1,8 @@
 import os
 
-import supervisely as sly
 from dotenv import load_dotenv
+
+import supervisely as sly
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -13,36 +14,97 @@ api = sly.Api()
 team_id = sly.env.team_id()  # test data in team ID:447
 workspace_id = sly.env.workspace_id()
 
+agent_id = 452
+module_id = 707
+module_info = api.app.get_ecosystem_module_info(module_id)
 
-def start_import(src_dir, project_name, project_modality):
-    importer = sly.ImportManager(src_dir, project_modality)
-    project = api.project.create(
-        workspace_id,
-        project_name,
-        change_name_if_conflict=True,
-        type=project_modality,
-    )
-    dataset = api.dataset.create(project.id, "ds0", change_name_if_conflict=True)
-
-    importer.upload_dataset(dataset.id)
+test_dirs_paths = {
+    # "local": "/Users/almaz/job/supervisely/projects/main-import/test_files",
+    "team_files": "/TESTS/",
+    "s3": "s3://remote-img-test/TESTS-NEW-IMPORT/",
+    "azure": "azure://supervisely-test/TEST-NEW-IMPORT/",
+    "google": "google://sly-dev-test/TEST-NEW-IMPORT/",
+}
 
 
 # # UPLOAD ALL TEST FOLDERS
-test_dir = "/TESTS"
-if sly.fs.dir_exists(test_dir):
-    test_dirs = sorted(os.listdir(test_dir))
-elif api.file.dir_exists(team_id, test_dir):
-    test_dirs = api.file.listdir(team_id, test_dir)
-else:
-    exit(0)
+for source, test_dir in test_dirs_paths.items():
+    if sly.fs.dir_exists(test_dir):
+        test_dirs = [
+            os.path.join(test_dir, d)
+            for d in os.listdir(test_dir)
+            if os.path.isdir(os.path.join(test_dir, d))
+        ]
+    elif api.storage.dir_exists(team_id, test_dir):
+        test_dirs = [
+            info.path
+            for info in api.storage.list(team_id, test_dir, recursive=False)
+            if info.is_dir
+        ]
+    else:
+        exit(0)
 
+    for project_type in sly.ProjectType:
+        project_name = f"{source}_{str(project_type)}"
+        project = api.project.create(
+            workspace_id,
+            project_name,
+            change_name_if_conflict=True,
+            type=project_type,
+        )
+        for path in test_dirs:
+            if str(project_type) in path:
+                dataset_name = os.path.basename(path.rstrip("/"))
+                dataset = api.dataset.create(project.id, dataset_name, change_name_if_conflict=True)
+                # importer = sly.ImportManager(path, project_type)
+                # importer.upload_dataset(dataset.id)
+                if project_type == sly.ProjectType.IMAGES:
+                    params = module_info.get_arguments(
+                        files_folder=path, images_project=project.id, images_dataset=dataset.id
+                    )
+                elif project_type == sly.ProjectType.VIDEOS:
+                    params = module_info.get_arguments(
+                        files_folder=path, videos_project=project.id, videos_dataset=dataset.id
+                    )
+                elif project_type == sly.ProjectType.POINT_CLOUDS:
+                    params = module_info.get_arguments(
+                        files_folder=path,
+                        point_cloud_project=project.id,
+                        point_cloud_dataset=dataset.id,
+                    )
+                elif project_type == sly.ProjectType.VOLUMES:
+                    params = module_info.get_arguments(
+                        files_folder=path, volumes_project=project.id, volumes_dataset=dataset.id
+                    )
+                elif project_type == sly.ProjectType.POINT_CLOUD_EPISODES:
+                    params = module_info.get_arguments(
+                        files_folder=path,
+                        point_cloud_episodes_project=project.id,
+                        point_cloud_episodes_dataset=dataset.id,
+                    )
+                else:
+                    continue
+                session = api.app.start(
+                    agent_id=agent_id,
+                    module_id=module_id,
+                    workspace_id=workspace_id,
+                    task_name=f"{source}",
+                    params=params,
+                )
+                try:
+                    api.app.wait(
+                        session.task_id,
+                        target_status=api.task.Status.FINISHED,
+                        attempts=25,
+                        attempt_delay_sec=5,
+                    )
 
-for project_type in sly.ProjectType:
-    for path in test_dirs:
-        if str(project_type) in path:
-            project_name = os.path.basename(path.rstrip("/"))
-            start_import(path, project_name, project_type)
-
+                except sly.WaitingTimeExceeded as e:
+                    print(e)
+                    api.app.stop(session.task_id)
+                except sly.TaskFinishedWithError as e:
+                    print(e)
+                print("Task status: ", api.app.get_status(session.task_id))
 
 # # UPLOAD SINGLE FOLDER
 # project_id = sly.env.project_id(raise_not_found=False)
