@@ -11,7 +11,6 @@ try:
         dataset = g.api.dataset.create(project.id, g.dataset_name, change_name_if_conflict=True)
     project_modality = project.type
 except Exception as e:
-    sly.fs.clean_dir(g.app_data)
     f.handle_exception_and_stop(e, "Error occurred. Please, contact support.")
 
 
@@ -19,14 +18,12 @@ except Exception as e:
 try:
     importer = sly.ImportManager(g.src_dir, project_modality)
 except Exception as e:
-    sly.fs.clean_dir(g.app_data)
     f.handle_exception_and_stop(e, "Failed to detect format. Please, check the input data.")
 
 # * 3 Convert and upload data
 try:
     importer.upload_dataset(dataset.id)
 except Exception as e:
-    sly.fs.clean_dir(g.app_data)
     f.handle_exception_and_stop(e, "Failed to convert and upload data. Please, check the logs.")
 
 # * 4. Set output project
