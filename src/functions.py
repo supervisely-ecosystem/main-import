@@ -2,6 +2,12 @@ import src.globals as g
 import supervisely as sly
 
 
+def get_labeling_interface(project: sly.ProjectInfo) -> str:
+    import_settings = project.import_settings
+    if import_settings is None or import_settings == {} or not isinstance(import_settings, dict):
+        import_settings = {"labelingInterface": "default", "computerVisionTask": "universal"}
+    return import_settings.get("labelingInterface", "default")
+
 def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
     from supervisely.io.exception_handlers import (
         handle_exception as sly_handle_exception,

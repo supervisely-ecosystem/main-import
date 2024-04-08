@@ -6,6 +6,7 @@ import src.globals as g
 # * 1. Get project and dataset infos
 try:
     project = g.api.project.get_info_by_id(g.project_id)
+    labeling_interface = f.get_labeling_interface(project)
     if g.dataset_id:
         dataset = g.api.dataset.get_info_by_id(g.dataset_id)
     else:
@@ -17,7 +18,7 @@ except Exception as e:
 
 # * 2. initialize importer to detect format
 try:
-    importer = sly.ImportManager(g.src_dir, project_modality)
+    importer = sly.ImportManager(g.src_dir, project_modality, labeling_interface=labeling_interface)
 except Exception as e:
     f.handle_exception_and_stop(e, "Failed to detect format. Please, check the input data.")
 
