@@ -1,4 +1,4 @@
-git+https://github.com/supervisely/supervisely.git@import-from-csv
+git+https://github.com/supervisely/supervisely.git@friendly-import
 
 # for coco dataset
 pycocotools
