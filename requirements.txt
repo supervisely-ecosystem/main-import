@@ -14,3 +14,6 @@ lazrs==0.3.0
 gdcm==1.1
 pylibjpeg==1.4.0
 pylibjpeg-libjpeg==1.3.1
+
+# for pdf
+pymupdf==1.22.5
