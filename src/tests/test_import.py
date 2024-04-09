@@ -35,6 +35,7 @@ for source, test_dir in test_dirs_paths.items():
             for d in os.listdir(test_dir)
             if os.path.isdir(os.path.join(test_dir, d))
         ]
+        test_dirs = sorted(test_dirs)
     elif api.storage.dir_exists(team_id, test_dir):
         test_dirs = [
             info.path
@@ -56,55 +57,55 @@ for source, test_dir in test_dirs_paths.items():
             if str(project_type) in path:
                 dataset_name = os.path.basename(path.rstrip("/"))
                 dataset = api.dataset.create(project.id, dataset_name, change_name_if_conflict=True)
-                # importer = sly.ImportManager(path, project_type)
-                # importer.upload_dataset(dataset.id)
-                if project_type == sly.ProjectType.IMAGES:
-                    params = module_info.get_arguments(
-                        files_folder=path, images_project=project.id, images_dataset=dataset.id
-                    )
-                elif project_type == sly.ProjectType.VIDEOS:
-                    params = module_info.get_arguments(
-                        files_folder=path, videos_project=project.id, videos_dataset=dataset.id
-                    )
-                elif project_type == sly.ProjectType.POINT_CLOUDS:
-                    params = module_info.get_arguments(
-                        files_folder=path,
-                        point_cloud_project=project.id,
-                        point_cloud_dataset=dataset.id,
-                    )
-                elif project_type == sly.ProjectType.VOLUMES:
-                    params = module_info.get_arguments(
-                        files_folder=path, volumes_project=project.id, volumes_dataset=dataset.id
-                    )
-                elif project_type == sly.ProjectType.POINT_CLOUD_EPISODES:
-                    params = module_info.get_arguments(
-                        files_folder=path,
-                        point_cloud_episodes_project=project.id,
-                        point_cloud_episodes_dataset=dataset.id,
-                    )
-                else:
-                    continue
-                session = api.app.start(
-                    agent_id=agent_id,
-                    module_id=module_id,
-                    workspace_id=workspace_id,
-                    task_name=f"{source}",
-                    params=params,
-                )
-                try:
-                    api.app.wait(
-                        session.task_id,
-                        target_status=api.task.Status.FINISHED,
-                        attempts=25,
-                        attempt_delay_sec=5,
-                    )
+                importer = sly.ImportManager(path, project_type)
+                importer.upload_dataset(dataset.id)
+                # if project_type == sly.ProjectType.IMAGES:
+                #     params = module_info.get_arguments(
+                #         files_folder=path, images_project=project.id, images_dataset=dataset.id
+                #     )
+                # elif project_type == sly.ProjectType.VIDEOS:
+                #     params = module_info.get_arguments(
+                #         files_folder=path, videos_project=project.id, videos_dataset=dataset.id
+                #     )
+                # elif project_type == sly.ProjectType.POINT_CLOUDS:
+                #     params = module_info.get_arguments(
+                #         files_folder=path,
+                #         point_cloud_project=project.id,
+                #         point_cloud_dataset=dataset.id,
+                #     )
+                # elif project_type == sly.ProjectType.VOLUMES:
+                #     params = module_info.get_arguments(
+                #         files_folder=path, volumes_project=project.id, volumes_dataset=dataset.id
+                #     )
+                # elif project_type == sly.ProjectType.POINT_CLOUD_EPISODES:
+                #     params = module_info.get_arguments(
+                #         files_folder=path,
+                #         point_cloud_episodes_project=project.id,
+                #         point_cloud_episodes_dataset=dataset.id,
+                #     )
+                # else:
+                #     continue
+                # session = api.app.start(
+                #     agent_id=agent_id,
+                #     module_id=module_id,
+                #     workspace_id=workspace_id,
+                #     task_name=f"{source}",
+                #     params=params,
+                # )
+                # try:
+                #     api.app.wait(
+                #         session.task_id,
+                #         target_status=api.task.Status.FINISHED,
+                #         attempts=25,
+                #         attempt_delay_sec=5,
+                #     )
 
-                except sly.WaitingTimeExceeded as e:
-                    print(e)
-                    api.app.stop(session.task_id)
-                except sly.TaskFinishedWithError as e:
-                    print(e)
-                print("Task status: ", api.app.get_status(session.task_id))
+                # except sly.WaitingTimeExceeded as e:
+                #     print(e)
+                #     api.app.stop(session.task_id)
+                # except sly.TaskFinishedWithError as e:
+                #     print(e)
+                # print("Task status: ", api.app.get_status(session.task_id))
 
 # # UPLOAD SINGLE FOLDER
 # project_id = sly.env.project_id(raise_not_found=False)
