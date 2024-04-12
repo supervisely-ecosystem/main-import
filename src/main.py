@@ -18,7 +18,9 @@ except Exception as e:
 
 # * 2. initialize importer to detect format
 try:
-    importer = sly.ImportManager(g.src_dir, project_modality, labeling_interface=labeling_interface)
+    if g.input_path is None:
+        raise Exception("Please, provide data to import.")
+    importer = sly.ImportManager(g.input_path, project_modality, labeling_interface=labeling_interface)
 except Exception as e:
     f.handle_exception_and_stop(e, "Failed to detect format. Please, check the input data.")
 

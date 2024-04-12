@@ -21,5 +21,8 @@ workspace_id = sly.env.workspace_id()
 project_id = sly.env.project_id()
 dataset_id = sly.env.dataset_id(raise_not_found=False)
 dataset_name = os.environ.get("modal.state.datasetName", "ds0")
-src_dir = sly.env.folder()
+input_path = sly.env.folder(raise_not_found=False)
+if input_path is None:
+    input_path = sly.env.file(raise_not_found=False)
+
 project_modality = None
