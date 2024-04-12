@@ -27,7 +27,7 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
         f"Debug info:\n"
         f"    team_id={g.team_id}\n    workspace_id={g.workspace_id}\n"
         f"    project_id={g.project_id}\n    dataset_id={g.dataset_id}\n"
-        f"    project_modality={g.project_modality}\n    src_dir={g.src_dir}\n"
+        f"    project_modality={g.project_modality}\n    src_dir={g.input_path}\n"
     )
     sly.fs.clean_dir(g.app_data)
     exit(0)
