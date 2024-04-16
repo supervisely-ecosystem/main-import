@@ -34,13 +34,11 @@ The application supports various modalities and formats, it will automatically d
     - Drag & Drop
     - Team Files
     - Agent Storage
-    - Cloud Storage such as AWS S3, Google Cloud Storage, or Azure Blob Storage. ✨ Available only in Enterprise Edition
+    - Cloud Storage such as (S3, Google, or Azure) - available only in the Enterprise Edition ✨
 3.  The application will automatically detect the format of the files and import them.
 4.  If no format is detected, the application will import only items without annotations.
 5.  You can import data into a new or existing project or dataset.
 6.  You can specify only 1 format for the import.
-
-ℹ Import from Cloud Storage is available only in the Enterprise Edition.
 
 ## Need Help?
 
