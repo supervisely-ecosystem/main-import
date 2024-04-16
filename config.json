@@ -24,7 +24,7 @@
   "docker_image": "supervisely/import-export:6.73.20",
   "main_script": "src/main.py",
   "task_location": "workspace_tasks",
-  "headless": true,
+  "headless": true, 
   "icon": "https://github.com/supervisely-ecosystem/main-import/releases/download/v0.0.1/main_import_logo.png",
   "icon_cover": true
 }
