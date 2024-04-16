@@ -4,7 +4,7 @@ import supervisely as sly
 
 def get_labeling_interface(project: sly.ProjectInfo) -> str:
     import_settings = project.import_settings
-    if import_settings is None or import_settings == {} or not isinstance(import_settings, dict):
+    if not import_settings or not isinstance(import_settings, dict):
         import_settings = {"labelingInterface": "default", "computerVisionTask": "universal"}
     return import_settings.get("labelingInterface", "default")
 

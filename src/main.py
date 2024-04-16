@@ -6,6 +6,8 @@ import src.globals as g
 # * 1. Get project and dataset infos
 try:
     project = g.api.project.get_info_by_id(g.project_id)
+    if project is None:
+        raise Exception(f"Project with id={g.project_id} not found")
     labeling_interface = f.get_labeling_interface(project)
     if g.dataset_id:
         dataset = g.api.dataset.get_info_by_id(g.dataset_id)
