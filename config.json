@@ -25,6 +25,6 @@
   "main_script": "src/main.py",
   "task_location": "workspace_tasks",
   "headless": true,
-  "icon": "https://github.com/supervisely-ecosystem/main-import/releases/download/untagged-e05b2676020bc12447d3/main_import_logo.png",
+  "icon": "https://github.com/supervisely-ecosystem/main-import/releases/download/v0.0.1/main_import_logo.png",
   "icon_cover": true
 }
