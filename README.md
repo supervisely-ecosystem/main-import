@@ -35,7 +35,6 @@ The application supports various modalities and formats, it will automatically d
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/images/cityscapes.md">Cityscapes</a><span> | </span>
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/images/masks.md">Images with PNG masks</a>
       </span> formats.
-
     - Import images for
       <span>
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/images/multiview.md">Multi-view</a><span> | </span>
