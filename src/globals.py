@@ -13,8 +13,6 @@ api = sly.Api()
 app_data = sly.app.get_data_dir()
 sly.fs.clean_dir(app_data)
 
-api = sly.Api()
-
 task_id = sly.env.task_id()
 team_id = sly.env.team_id()
 workspace_id = sly.env.workspace_id()
