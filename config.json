@@ -2,24 +2,7 @@
   "name": "Auto Import",
   "type": "app",
   "version": "2.0.0",
-  "categories": ["system"],
-  "context_menu": {
-    "context_category": "Import",
-    "target": [
-      "files_folder",
-      "files_file",
-      "images_project",
-      "images_dataset",
-      "videos_project",
-      "videos_dataset",
-      "volumes_project",
-      "volumes_dataset",
-      "point_cloud_project",
-      "point_cloud_dataset",
-      "point_cloud_episodes_project",
-      "point_cloud_episodes_dataset"
-    ]
-  },
+  "categories": ["system", "import"],
   "system": true,
   "description": "Universal import tool for Images, Videos, Pointclouds, and Volumes",
   "docker_image": "supervisely/import-export:6.73.68",
