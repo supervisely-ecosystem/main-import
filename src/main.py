@@ -13,7 +13,8 @@ try:
         dataset = g.api.dataset.get_info_by_id(g.dataset_id)
     else:
         dataset = g.api.dataset.create(project.id, g.dataset_name, change_name_if_conflict=True)
-    project_modality = project.type
+    g.dataset_id = dataset.id
+    g.project_modality = project.type
 except Exception as e:
     f.handle_exception_and_stop(e, "Error occurred. Please, contact support")
 
@@ -22,13 +23,15 @@ except Exception as e:
 try:
     if g.input_path is None:
         raise Exception("Please, provide data to import.")
-    importer = sly.ImportManager(g.input_path, project_modality, labeling_interface=labeling_interface)
+    importer = sly.ImportManager(
+        g.input_path, g.project_modality, labeling_interface=labeling_interface
+    )
 except Exception as e:
-    f.handle_exception_and_stop(e, "Failed to detect format. Please, check the input data")
+    f.handle_exception_and_stop(e, "Failed to detect format")
 
 # * 3 Convert and upload data
 try:
-    importer.upload_dataset(dataset.id)
+    importer.upload_dataset(g.dataset_id)
 except Exception as e:
     f.handle_exception_and_stop(e, "Failed to convert and upload data. Please, check the logs")
 
