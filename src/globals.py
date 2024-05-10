@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 
 import supervisely as sly
+from supervisely.collection.str_enum import StrEnum
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -32,3 +33,11 @@ if input_path is None:
     input_path = sly.env.file(raise_not_found=False)
 
 project_modality = None
+
+
+class LabelingInterfaces(StrEnum):
+    DEFAULT = "default"
+    MULTI_VIEW = "multi_view"
+    MULTISPECTRAL = "multispectral"
+    MEDICAL_2D = "medical_imaging_single"
+    HIGH_COLOR = "images_with_16_color"

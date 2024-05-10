@@ -1,12 +1,28 @@
 import src.globals as g
 import supervisely as sly
+from supervisely.project.project_type import _MULTISPECTRAL_TAG_NAME
+
+
+def get_project_settings(project_id: int) -> sly.ProjectSettings:
+    project_meta = sly.ProjectMeta.from_json(g.api.project.get_meta(project_id))
+    return project_meta.project_settings
 
 
 def get_labeling_interface(project: sly.ProjectInfo) -> str:
+    project_settings = get_project_settings(project.id)
     import_settings = project.import_settings
-    if not import_settings or not isinstance(import_settings, dict):
-        import_settings = {"labelingInterface": "default", "computerVisionTask": "universal"}
-    return import_settings.get("labelingInterface", "default")
+    labeling_interface = None
+    if import_settings and isinstance(import_settings, dict):
+        labeling_interface = import_settings.get("labelingInterface")
+    if labeling_interface is None:
+        if not project_settings.multiview_enabled:
+            labeling_interface = g.LabelingInterfaces.DEFAULT.value
+        elif project_settings.multiview_tag_name == _MULTISPECTRAL_TAG_NAME:
+            labeling_interface = g.LabelingInterfaces.MULTISPECTRAL.value
+        else:
+            labeling_interface = g.LabelingInterfaces.MULTI_VIEW.value
+    return labeling_interface
+
 
 def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
     from supervisely.io.exception_handlers import (
