@@ -8,9 +8,10 @@ try:
     if project is None:
         raise Exception(f"Project with id={g.project_id} not found")
     labeling_interface = f.get_labeling_interface(project)
+    dataset = None
     if g.dataset_id:
         dataset = g.api.dataset.get_info_by_id(g.dataset_id)
-    else:
+    if dataset is None:
         dataset = g.api.dataset.create(project.id, g.dataset_name, change_name_if_conflict=True)
     g.dataset_id = dataset.id
     g.project_modality = project.type
