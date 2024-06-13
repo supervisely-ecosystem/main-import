@@ -1,5 +1,5 @@
 # supervisely==6.73.97
-git+https://github.com/supervisely/supervisely.git@labeling-interface-to-project-settings
+git+https://github.com/supervisely/supervisely.git@import-wizard-updates-6
 
 # for coco dataset
 pycocotools
