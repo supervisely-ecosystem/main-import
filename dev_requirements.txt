@@ -1,4 +1,4 @@
-supervisely==6.73.104
+supervisely==6.73.106
 # git+https://github.com/supervisely/supervisely.git@friendly-import
 
 # for coco dataset
