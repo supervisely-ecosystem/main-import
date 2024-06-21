@@ -1,6 +1,7 @@
+import supervisely as sly
+
 import src.functions as f
 import src.globals as g
-import supervisely as sly
 
 # * 1. Get project and dataset infos
 try:
@@ -40,6 +41,7 @@ output_title = (
     f"{project.name}. {'' if 'dataset' in dataset.name else 'New dataset: '}{dataset.name}"
 )
 g.api.task.set_output_project(g.task_id, project.id, output_title)
+g.api.app.add_output_project(project)
 
 # * 5. Clean app_data directory
 sly.fs.clean_dir(g.app_data)
