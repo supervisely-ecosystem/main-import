@@ -1,5 +1,5 @@
-supervisely==6.73.110
-# git+https://github.com/supervisely/supervisely.git@friendly-import
+# supervisely==6.73.110
+git+https://github.com/supervisely/supervisely.git@import-wizard-updates-7
 
 # for coco dataset
 pycocotools

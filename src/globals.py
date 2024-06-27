@@ -1,6 +1,7 @@
 import datetime
 import os
 
+from distutils.util import strtobool
 from dotenv import load_dotenv
 
 import supervisely as sly
@@ -21,6 +22,7 @@ workspace_id = sly.env.workspace_id()
 project_id = sly.env.project_id()
 dataset_id = sly.env.dataset_id(raise_not_found=False)
 
+import_as_links = bool(strtobool(os.environ.get("modal.state.importAsLinks", "false")))
 default_ds_name = f"dataset {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 dataset_name = os.environ.get("modal.state.datasetName", default_ds_name)
 if dataset_name == "":
