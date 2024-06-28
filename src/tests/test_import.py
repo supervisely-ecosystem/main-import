@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 
 import supervisely as sly
+from supervisely.project.project_settings import LabelingInterface
 
 if sly.is_development():
     load_dotenv("local.env")
@@ -53,12 +54,71 @@ for source, test_dir in test_dirs_paths.items():
             change_name_if_conflict=True,
             type=project_type,
         )
+        if project_type == sly.ProjectType.IMAGES:
+            multi_view_project = api.project.create(
+                workspace_id,
+                project_name + "_multi_view",
+                change_name_if_conflict=True,
+                type=project_type,
+            )
+            multispectral_project = api.project.create(
+                workspace_id,
+                project_name + "_multispectral",
+                change_name_if_conflict=True,
+                type=project_type,
+            )
+            medical2d_project = api.project.create(
+                workspace_id,
+                project_name + "_medical2d",
+                change_name_if_conflict=True,
+                type=project_type,
+            )
+            matting_project = api.project.create(
+                workspace_id,
+                project_name + "_matting",
+                change_name_if_conflict=True,
+                type=project_type,
+            )
         for path in test_dirs:
             if str(project_type) in path:
+                labeling_interface = LabelingInterface.DEFAULT
+                curr_project = project
+                if "multi-view" in path:
+                    labeling_interface = LabelingInterface.MULTIVIEW
+                    curr_project = multi_view_project
+                elif "multispectral" in path:
+                    labeling_interface = LabelingInterface.MULTISPECTRAL
+                    curr_project = multispectral_project
+                elif "medical2d" in path:
+                    labeling_interface = LabelingInterface.MEDICAL_IMAGING_SINGLE
+                    curr_project = medical2d_project
+                elif "matting" in path:
+                    labeling_interface = LabelingInterface.IMAGE_MATTING
+                    curr_project = matting_project
+
+                if "links" in path:
+                    upload_as_links = True
+
                 dataset_name = os.path.basename(path.rstrip("/"))
-                dataset = api.dataset.create(project.id, dataset_name, change_name_if_conflict=True)
-                importer = sly.ImportManager(path, project_type)
+                dataset = api.dataset.create(
+                    curr_project.id, dataset_name, change_name_if_conflict=True
+                )
+                importer = sly.ImportManager(
+                    path, project_type, labeling_interface=labeling_interface
+                )
                 importer.upload_dataset(dataset.id)
+
+        remote_path = None
+        if project_type == sly.ProjectType.IMAGES:
+            remote_path = "s3://remote-img-test/TESTS-NEW-IMPORT/01. images SLY (from export)/"
+        elif project_type == sly.ProjectType.VIDEOS:
+            remote_path = "s3://remote-img-test/TESTS-NEW-IMPORT/09. videos SLY (from export)/"
+        if remote_path is not None:
+            dataset_name = os.path.basename(remote_path.rstrip("/"))
+            dataset = api.dataset.create(project.id, dataset_name, change_name_if_conflict=True)
+            importer = sly.ImportManager(remote_path, project_type, upload_as_links=True)
+            importer.upload_dataset(dataset.id)
+
                 # if project_type == sly.ProjectType.IMAGES:
                 #     params = module_info.get_arguments(
                 #         files_folder=path, images_project=project.id, images_dataset=dataset.id
