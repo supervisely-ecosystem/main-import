@@ -30,7 +30,7 @@ try:
         upload_as_links=g.import_as_links,
     )
 except Exception as e:
-    f.handle_exception_and_stop(e, "Failed to detect format")
+    f.handle_exception_and_stop(e, "Format was not recognized")
 
 # * 3 Convert and upload data
 try:

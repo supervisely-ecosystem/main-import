@@ -48,6 +48,7 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
         if len(err_msg) > 255:
             err_msg = err_msg[:252] + "..."
         g.api.task.set_output_error(g.task_id, msg, err_msg)
-        sly.logger.error(f"{msg}. {repr(exc)}", extra=debug_info, exc_info=True)
+        exc_str = str(exc) if isinstance(exc, RuntimeError) else repr(exc) # for better logging
+        sly.logger.error(f"{msg}. {exc_str}", extra=debug_info, exc_info=True)
     sly.fs.clean_dir(g.app_data)
     exit(0)
