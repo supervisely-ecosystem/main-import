@@ -25,10 +25,13 @@ try:
     if g.input_path is None:
         raise Exception("Please, provide data to import.")
     importer = sly.ImportManager(
-        g.input_path, g.project_modality, labeling_interface=labeling_interface
+        g.input_path,
+        g.project_modality,
+        labeling_interface=labeling_interface,
+        upload_as_links=g.import_as_links,
     )
 except Exception as e:
-    f.handle_exception_and_stop(e, "Failed to detect format")
+    f.handle_exception_and_stop(e, "Format was not recognized")
 
 # * 3 Convert and upload data
 try:

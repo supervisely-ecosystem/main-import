@@ -1,9 +1,9 @@
 import datetime
 import os
+from distutils.util import strtobool
 
 import supervisely as sly
 from dotenv import load_dotenv
-from supervisely.collection.str_enum import StrEnum
 
 from workflow import Workflow
 
@@ -23,6 +23,7 @@ workspace_id = sly.env.workspace_id()
 project_id = sly.env.project_id()
 dataset_id = sly.env.dataset_id(raise_not_found=False)
 
+import_as_links = bool(strtobool(os.environ.get("modal.state.importAsLinks", "false")))
 default_ds_name = f"dataset {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 dataset_name = os.environ.get("modal.state.datasetName", default_ds_name)
 if dataset_name == "":
@@ -35,11 +36,3 @@ if input_path is None:
     input_path = sly.env.file(raise_not_found=False)
 
 project_modality = None
-
-
-class LabelingInterfaces(StrEnum):
-    DEFAULT = "default"
-    MULTI_VIEW = "multi_view"
-    MULTISPECTRAL = "multispectral"
-    MEDICAL_2D = "medical_imaging_single"
-    HIGH_COLOR = "images_with_16_color"
