@@ -1,4 +1,4 @@
-git+https://github.com/supervisely/supervisely.git@workflow+versions
+supervisely==6.73.123
 # git+https://github.com/supervisely/supervisely.git@friendly-import
 
 # for coco dataset
