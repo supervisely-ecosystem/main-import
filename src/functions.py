@@ -1,6 +1,8 @@
 import src.globals as g
 import supervisely as sly
 from supervisely.project.project_type import _MULTISPECTRAL_TAG_NAME
+from supervisely.project.project_settings import LabelingInterface
+
 
 
 def get_project_settings(project_id: int) -> sly.ProjectSettings:
@@ -16,11 +18,11 @@ def get_labeling_interface(project: sly.ProjectInfo) -> str:
         labeling_interface = import_settings.get("labelingInterface")
     if labeling_interface is None:
         if not project_settings.multiview_enabled:
-            labeling_interface = g.LabelingInterfaces.DEFAULT.value
+            labeling_interface = LabelingInterface.DEFAULT
         elif project_settings.multiview_tag_name == _MULTISPECTRAL_TAG_NAME:
-            labeling_interface = g.LabelingInterfaces.MULTISPECTRAL.value
+            labeling_interface = LabelingInterface.MULTISPECTRAL
         else:
-            labeling_interface = g.LabelingInterfaces.MULTI_VIEW.value
+            labeling_interface = LabelingInterface.MULTIVIEW
     return labeling_interface
 
 
