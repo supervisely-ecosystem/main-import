@@ -1,5 +1,5 @@
 # supervisely==6.73.126
-git+https://github.com/supervisely/supervisely.git@new-shape-cuboid-2d
+git+https://github.com/supervisely/supervisely.git@import-sly-project
 
 # for coco dataset
 pycocotools
