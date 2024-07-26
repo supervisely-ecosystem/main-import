@@ -43,11 +43,11 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
 
     handled_exc = sly_handle_exception(exc)
     if handled_exc is not None:
+        err_msg = handled_exc.get_message_for_exception()
+        sly.logger.error(err_msg, extra=debug_info, exc_info=True)
         if isinstance(handled_exc, ErrorHandler.API.PaymentRequired):
-            raise handled_exc.raise_error(has_ui=False)
+            raise exc
         else:
-            err_msg = handled_exc.get_message_for_exception()
-            sly.logger.error(err_msg, extra=debug_info, exc_info=True)
             g.api.task.set_output_error(g.task_id, handled_exc.title, handled_exc.message)
     else:
         err_msg = repr(exc)
