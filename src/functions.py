@@ -2,7 +2,7 @@ import src.globals as g
 import supervisely as sly
 from supervisely.project.project_type import _MULTISPECTRAL_TAG_NAME
 from supervisely.project.project_settings import LabelingInterface
-
+from supervisely.io.exception_handlers import ErrorHandler
 
 
 def get_project_settings(project_id: int) -> sly.ProjectSettings:
@@ -30,6 +30,7 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
     from supervisely.io.exception_handlers import (
         handle_exception as sly_handle_exception,
     )
+    sly.fs.clean_dir(g.app_data)
 
     debug_info = {
         "team_id": g.team_id,
@@ -42,9 +43,12 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
 
     handled_exc = sly_handle_exception(exc)
     if handled_exc is not None:
-        g.api.task.set_output_error(g.task_id, handled_exc.title, handled_exc.message)
-        err_msg = handled_exc.get_message_for_exception()
-        sly.logger.error(err_msg, extra=debug_info, exc_info=True)
+        if isinstance(handled_exc, ErrorHandler.API.PaymentRequired):
+            raise handled_exc.raise_error(has_ui=False)
+        else:
+            err_msg = handled_exc.get_message_for_exception()
+            sly.logger.error(err_msg, extra=debug_info, exc_info=True)
+            g.api.task.set_output_error(g.task_id, handled_exc.title, handled_exc.message)
     else:
         err_msg = repr(exc)
         if len(err_msg) > 255:
@@ -52,5 +56,4 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
         g.api.task.set_output_error(g.task_id, msg, err_msg)
         exc_str = str(exc) if isinstance(exc, RuntimeError) else repr(exc) # for better logging
         sly.logger.error(f"{msg}. {exc_str}", extra=debug_info, exc_info=True)
-    sly.fs.clean_dir(g.app_data)
     exit(0)
