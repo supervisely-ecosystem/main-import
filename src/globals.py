@@ -2,9 +2,9 @@ import datetime
 import os
 from distutils.util import strtobool
 
-import supervisely as sly
 from dotenv import load_dotenv
 
+import supervisely as sly
 from workflow import Workflow
 
 if sly.is_development():
@@ -22,6 +22,9 @@ team_id = sly.env.team_id()
 workspace_id = sly.env.workspace_id()
 project_id = sly.env.project_id()
 dataset_id = sly.env.dataset_id(raise_not_found=False)
+
+# Enable OpenEXR support
+os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
 
 import_as_links = bool(strtobool(os.environ.get("modal.state.importAsLinks", "false")))
 default_ds_name = f"dataset {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
