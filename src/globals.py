@@ -2,9 +2,9 @@ import datetime
 import os
 from distutils.util import strtobool
 
-import supervisely as sly
 from dotenv import load_dotenv
 
+import supervisely as sly
 from workflow import Workflow
 
 if sly.is_development():
