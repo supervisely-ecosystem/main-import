@@ -1,5 +1,5 @@
 # supervisely==6.73.206
-git+https://github.com/supervisely/supervisely.git@validate-image-bounds
+git+https://github.com/supervisely/supervisely.git@fix-pcd-converter
 
 # for coco dataset
 pycocotools
