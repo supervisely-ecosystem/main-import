@@ -1,1 +1,1 @@
-git+https://github.com/supervisely/supervisely.git@test-qutoimport-with-async-download
+git+https://github.com/supervisely/supervisely.git@test-qutoimport-with-async-download-2
