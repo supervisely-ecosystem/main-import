@@ -5,7 +5,7 @@
 	"categories": ["system", "import"],
 	"system": true,
 	"description": "Universal import tool for Images, Videos, Pointclouds, and Volumes",
-	"docker_image": "supervisely/import-export:6.73.231",
+	"docker_image": "supervisely/import-export:6.73.235",
 	"min_instance_version": "6.12.5",
 	"main_script": "src/main.py",
 	"task_location": "workspace_tasks",
