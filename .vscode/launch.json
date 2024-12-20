@@ -11,6 +11,17 @@
       "env": {
         "PYTHONPATH": "${workspaceFolder}:${PYTHONPATH}"
       }
+    },
+    {
+      "name": "Main",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+      "PYTHONPATH": "${workspaceFolder}:${PYTHONPATH}"
+      }
     }
   ]
 }

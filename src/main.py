@@ -33,7 +33,7 @@ try:
 except Exception as e:
     f.handle_exception_and_stop(e, "Format was not recognized")
 
-# * 3 Convert and upload data
+# * 3. Convert and upload data
 try:
     importer.upload_dataset(g.dataset_id)
 except Exception as e:

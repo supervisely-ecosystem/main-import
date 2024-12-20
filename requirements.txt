@@ -1,5 +1,5 @@
 # supervisely==6.73.206
-git+https://github.com/supervisely/supervisely.git@fix-pcd-converter
+git+https://github.com/supervisely/supervisely.git@import-pcd-formats
 
 # for coco dataset
 pycocotools
