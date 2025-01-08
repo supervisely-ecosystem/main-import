@@ -1,4 +1,4 @@
-supervisely==6.73.264
+supervisely==6.73.275
 # git+https://github.com/supervisely/supervisely.git@import-wizard-updates-7
 
 # for coco dataset
@@ -27,3 +27,6 @@ nibabel==5.2.1
 
 # for LYFT
 lyft-dataset-sdk==0.0.8
+
+# for NuScenes
+nuscenes-devkit==1.1.11

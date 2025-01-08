@@ -1,7 +1,6 @@
-import supervisely as sly
-
 import src.functions as f
 import src.globals as g
+import supervisely as sly
 
 # * 1. Get project and dataset infos
 try:
