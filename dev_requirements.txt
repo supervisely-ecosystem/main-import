@@ -30,3 +30,6 @@ lyft-dataset-sdk==0.0.8
 
 # for NuScenes
 nuscenes-devkit==1.1.11
+
+# for BAG files
+bagpy==0.5
