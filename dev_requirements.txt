@@ -1,4 +1,4 @@
-# supervisely==6.73.297
+# supervisely==6.73.306
 # git+https://github.com/supervisely/supervisely.git@import-wizard-updates-7
 
 # for coco dataset
