@@ -1,5 +1,5 @@
 # supervisely==6.73.206
-git+https://github.com/supervisely/supervisely.git@import-pcd-formats
+git+https://github.com/supervisely/supervisely.git@add-kitti360
 lyft_dataset_sdk
 # for coco dataset
 pycocotools
@@ -24,3 +24,4 @@ tifffile==2023.7.10
 
 # for NIfTI
 nibabel==5.2.1
+bagpy
