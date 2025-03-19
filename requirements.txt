@@ -1,5 +1,5 @@
 # supervisely==6.73.206
-git+https://github.com/supervisely/supervisely.git@add-kitti360
+git+https://github.com/supervisely/supervisely.git@dicom-handle-color-channel
 lyft_dataset_sdk
 # for coco dataset
 pycocotools
