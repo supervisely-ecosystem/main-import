@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 from distutils.util import strtobool
 
@@ -10,6 +11,8 @@ from workflow import Workflow
 if sly.is_development():
     load_dotenv("local.env")
     load_dotenv(os.path.expanduser("~/supervisely.env"))
+
+os.environ["APP_CATEGORIES"] = json.dumps(["import"])  # ! for tests
 
 api = sly.Api()
 workflow = Workflow(api)
