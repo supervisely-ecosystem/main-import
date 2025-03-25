@@ -12,7 +12,6 @@ if sly.is_development():
     load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 api = sly.Api()
-sly.logger.info("Environment variables", extra={"env": os.environ})
 workflow = Workflow(api)
 
 app_data = sly.app.get_data_dir()
