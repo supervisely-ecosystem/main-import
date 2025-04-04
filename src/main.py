@@ -42,7 +42,9 @@ except Exception as e:
     f.handle_exception_and_stop(e, "Failed to convert and upload data. Please, check the logs")
 
 # * 4. Set output project
-if hasattr(importer, "blob_project") and importer.blob_project:   
+sly.logger.info(f"Importer attributes: {dir(importer)}")
+
+if hasattr(importer, "blob_project") and importer.blob_project:    
     sly.logger.info(
         "Data was uploaded in blob format. " 
         "All items have been added to the top level of the project. " )
