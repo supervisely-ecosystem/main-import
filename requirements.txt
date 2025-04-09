@@ -1,5 +1,5 @@
 # supervisely==6.73.206
-git+https://github.com/supervisely/supervisely.git@monochrome-conversion-3d
+git+https://github.com/supervisely/supervisely.git@pcd-binfile-collection
 lyft_dataset_sdk
 # for coco dataset
 pycocotools
