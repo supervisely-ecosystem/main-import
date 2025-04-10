@@ -53,7 +53,7 @@ if hasattr(importer.converter, "blob_project") and importer.converter.blob_proje
         )
         g.api.dataset.remove(g.dataset_id)
         sly.logger.info(
-            f"Dataset {dataset.name} was removed. "
+            f"Dataset '{dataset.name}' was removed. "
         )
     output_title = f"{project.name}"
 else:
