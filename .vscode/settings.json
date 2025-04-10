@@ -14,10 +14,10 @@
         "100"
     ],
     "[html]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
