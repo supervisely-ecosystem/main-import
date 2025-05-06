@@ -131,5 +131,24 @@
         "modal.state.slyFolder": "./test_files/nifti-scores-only/"
       }
     },
+    {
+      "name": "Prod test",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${PYTHONPATH}",
+        "SERVER_ADDRESS": "https://app.supervisely.com",
+        "API_TOKEN": "AdY6SMzifoHSY80ZlyuobhvBRh2PjopohaN4bOVKFBlrNUn3JA2zt4BjKPETC1a5vuBt8U59YKnCCUz11x5IcOMXfy64n72agKmE2gUZuBTEo7WRi77gjRtpbihLjICe",
+        "USER_ID": "105055",
+        "TEAM_ID": "107558",
+        "WORKSPACE_ID": "122060",
+        "PROJECT_ID": "344320",
+        "LOG_LEVEL": "debug",
+        "modal.state.slyFolder": "./test_files/prod-archive/"
+      }
+    },
   ]
 }
