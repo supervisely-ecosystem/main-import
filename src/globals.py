@@ -31,8 +31,9 @@ if dataset_name == "":
 existing_ds_names = set([ds.name for ds in api.dataset.get_list(project_id, recursive=True)])
 dataset_name = sly.generate_free_name(existing_ds_names, dataset_name, False, True)
 
-input_path = sly.env.folder(raise_not_found=False)
-if input_path is None:
-    input_path = sly.env.file(raise_not_found=False)
+input_paths = sly.env.folders(raise_not_found=False) or sly.env.folder(raise_not_found=False)
+if input_paths is None:
+    input_paths = sly.env.files(raise_not_found=False) or sly.env.file(raise_not_found=False)
+
 
 project_modality = None
