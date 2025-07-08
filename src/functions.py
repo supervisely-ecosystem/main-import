@@ -39,7 +39,7 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
         "project_id": g.project_id,
         "dataset_id": g.dataset_id,
         "project_modality": g.project_modality,
-        "src_dir": g.input_path,
+        "input_paths": g.input_paths,
     }
 
     handled_exc = sly_handle_exception(exc)
