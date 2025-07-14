@@ -1,6 +1,9 @@
 import src.functions as f
 import src.globals as g
 import supervisely as sly
+from supervisely.convert.volume.nii.nii_planes_volume_converter import (
+    NiiPlaneStructuredAnnotationConverter,
+)
 
 # * 1. Get project and dataset infos
 try:
@@ -40,7 +43,6 @@ try:
 except Exception as e:
     f.handle_exception_and_stop(e, "Failed to convert and upload data. Please, check the logs")
 
-# * 4. Set output project
 
 if hasattr(importer.converter, "blob_project") and importer.converter.blob_project:
     sly.logger.info(
@@ -56,6 +58,14 @@ else:
     output_title = (
         f"{project.name}. {'' if 'dataset' in dataset.name else 'New dataset: '}{dataset.name}"
     )
+
+if isinstance(importer.converter, NiiPlaneStructuredAnnotationConverter):
+    if dataset_created:
+        sly.logger.info("Please, note that the dataset was created but not used. ")
+        g.api.dataset.remove(g.dataset_id)
+        sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
+
+# * 4. Set output project
 g.api.task.set_output_project(g.task_id, project.id, output_title)
 g.workflow.add_output(project)
 
