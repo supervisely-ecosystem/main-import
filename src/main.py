@@ -1,7 +1,9 @@
-import supervisely as sly
-
 import src.functions as f
 import src.globals as g
+import supervisely as sly
+from supervisely.convert.volume.nii.nii_planes_volume_converter import (
+    NiiPlaneStructuredAnnotationConverter,
+)
 
 # * 1. Get project and dataset infos
 try:
@@ -24,10 +26,10 @@ except Exception as e:
 
 # * 2. initialize importer to detect format
 try:
-    if g.input_path is None:
+    if g.input_paths is None:
         raise Exception("Please, provide data to import.")
     importer = sly.ImportManager(
-        g.input_path,
+        g.input_paths,
         g.project_modality,
         labeling_interface=labeling_interface,
         upload_as_links=g.import_as_links,
@@ -41,25 +43,29 @@ try:
 except Exception as e:
     f.handle_exception_and_stop(e, "Failed to convert and upload data. Please, check the logs")
 
-# * 4. Set output project
 
 if hasattr(importer.converter, "blob_project") and importer.converter.blob_project:
     sly.logger.info(
-        "Data was uploaded in blob format. " 
-        "All items have been added to the top level of the project. " )
+        "Data was uploaded in blob format. "
+        "All items have been added to the top level of the project. "
+    )
     if dataset_created:
-        sly.logger.info(
-            "Please, note that the dataset was created but not used. "
-        )
+        sly.logger.info("Please, note that the dataset was created but not used. ")
         g.api.dataset.remove(g.dataset_id)
-        sly.logger.info(
-            f"Dataset '{dataset.name}' was removed. "
-        )
+        sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
     output_title = f"{project.name}"
 else:
     output_title = (
         f"{project.name}. {'' if 'dataset' in dataset.name else 'New dataset: '}{dataset.name}"
     )
+
+if isinstance(importer.converter, NiiPlaneStructuredAnnotationConverter):
+    if dataset_created:
+        sly.logger.info("Please, note that the dataset was created but not used. ")
+        g.api.dataset.remove(g.dataset_id)
+        sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
+
+# * 4. Set output project
 g.api.task.set_output_project(g.task_id, project.id, output_title)
 g.workflow.add_output(project)
 

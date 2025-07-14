@@ -1,8 +1,8 @@
 import src.globals as g
 import supervisely as sly
-from supervisely.project.project_type import _MULTISPECTRAL_TAG_NAME
-from supervisely.project.project_settings import LabelingInterface
 from supervisely.io.exception_handlers import ErrorHandler
+from supervisely.project.project_settings import LabelingInterface
+from supervisely.project.project_type import _MULTISPECTRAL_TAG_NAME
 
 
 def get_project_settings(project_id: int) -> sly.ProjectSettings:
@@ -30,6 +30,7 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
     from supervisely.io.exception_handlers import (
         handle_exception as sly_handle_exception,
     )
+
     sly.fs.clean_dir(g.app_data)
 
     debug_info = {
@@ -38,7 +39,7 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
         "project_id": g.project_id,
         "dataset_id": g.dataset_id,
         "project_modality": g.project_modality,
-        "src_dir": g.input_path,
+        "input_paths": g.input_paths,
     }
 
     handled_exc = sly_handle_exception(exc)
@@ -54,6 +55,6 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
         if len(err_msg) > 255:
             err_msg = err_msg[:252] + "..."
         g.api.task.set_output_error(g.task_id, msg, err_msg)
-        exc_str = str(exc) if isinstance(exc, RuntimeError) else repr(exc) # for better logging
+        exc_str = str(exc) if isinstance(exc, RuntimeError) else repr(exc)  # for better logging
         sly.logger.error(f"{msg}. {exc_str}", extra=debug_info, exc_info=True)
     exit(0)
