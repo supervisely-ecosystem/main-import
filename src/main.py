@@ -55,8 +55,14 @@ if hasattr(importer.converter, "blob_project") and importer.converter.blob_proje
         sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
     output_title = f"{project.name}"
 else:
-    dataset_prefix = "New dataset: " if dataset_created and "dataset" not in dataset.name else ""
-    output_title = f"{project.name}. {dataset_prefix}{dataset.name}"
+    prefix_parts = []
+    if dataset_created:
+        prefix_parts.append("New")
+    if "dataset" not in dataset.name.lower():
+        prefix_parts.append("Dataset:")
+    
+    prefix = " ".join(prefix_parts)
+    output_title = f"{project.name}. {prefix} {dataset.name}".strip()
 
 if isinstance(importer.converter, NiiPlaneStructuredAnnotationConverter):
     if dataset_created:
