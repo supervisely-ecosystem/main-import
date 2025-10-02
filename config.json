@@ -1,15 +1,15 @@
 {
-	"name": "Auto Import",
-	"type": "app",
-	"version": "2.0.0",
-	"categories": ["system", "import"],
-	"system": true,
-	"description": "Universal import tool for Images, Videos, Pointclouds, and Volumes",
-	"docker_image": "supervisely/import-export:6.73.447",
-	"min_instance_version": "6.15.2",
-	"main_script": "src/main.py",
-	"task_location": "workspace_tasks",
-	"headless": true,
-	"icon": "https://github.com/supervisely-ecosystem/main-import/releases/download/v0.0.1/main_import_logo.png",
-	"icon_cover": true
+  "name": "Auto Import",
+  "type": "app",
+  "version": "2.0.0",
+  "categories": ["system", "import"],
+  "system": true,
+  "description": "Universal import tool for Images, Videos, Pointclouds, and Volumes",
+  "docker_image": "supervisely/import-export:6.73.451",
+  "min_instance_version": "6.15.2",
+  "main_script": "src/main.py",
+  "task_location": "workspace_tasks",
+  "headless": true,
+  "icon": "https://github.com/supervisely-ecosystem/main-import/releases/download/v0.0.1/main_import_logo.png",
+  "icon_cover": true
 }
