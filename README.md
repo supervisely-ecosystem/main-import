@@ -4,7 +4,7 @@
 
 # Auto Import
 
-[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](../../../../supervisely-ecosystem/main-import)
+[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervisely.com/apps/supervisely-ecosystem/main-import)
 [![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervisely.com/slack)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/main-import)
 [![views](https://app.supervisely.com/img/badges/views/supervisely-ecosystem/main-import.png)](https://supervisely.com)
