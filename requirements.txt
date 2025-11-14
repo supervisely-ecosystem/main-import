@@ -25,3 +25,4 @@ tifffile==2023.7.10
 # for NIfTI
 nibabel==5.2.1
 bagpy
+nuscenes-devkit
