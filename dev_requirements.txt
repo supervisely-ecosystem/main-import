@@ -1,4 +1,4 @@
-# git+https://github.com/supervisely/supervisely.git@branch-name
+#git+https://github.com/supervisely/supervisely.git@binfile-pcd-import
 supervisely==6.73.483
 
 # for coco dataset
