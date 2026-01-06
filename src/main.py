@@ -46,39 +46,39 @@ try:
 except Exception as e:
     f.handle_exception_and_stop(e, "Failed to convert and upload data. Please, check the logs")
 
+for converter in importer.converters:
+    if hasattr(converter, "blob_project") and converter.blob_project:
+        sly.logger.info(
+            "Data was uploaded in blob format. "
+            "All items have been added to the top level of the project. "
+        )
+        if dataset_created:
+            sly.logger.info("Cleaning up unused dataset...")
+            g.api.dataset.remove(g.dataset_id)
+            sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
+        output_title = f"{project.name}"
+    else:
+        prefix_parts = []
+        if dataset_created:
+            prefix_parts.append("New ")
+        if project_created:
+            g.dataset_id = new_dataset_id
+            dataset = g.api.dataset.get_info_by_id(g.dataset_id)
+            project = g.api.project.get_info_by_id(dataset.project_id)
+            sly.logger.info("New project and dataset were created during import process.")
+            sly.logger.info(f"Project: '{project.name}' (ID: {project.id})")
+            sly.logger.info(f"Dataset: '{dataset.name}' (ID: {dataset.id})")
+        if "dataset" not in dataset.name.lower():
+            prefix_parts.append("Dataset: ")
 
-if hasattr(importer.converter, "blob_project") and importer.converter.blob_project:
-    sly.logger.info(
-        "Data was uploaded in blob format. "
-        "All items have been added to the top level of the project. "
-    )
-    if dataset_created:
-        sly.logger.info("Cleaning up unused dataset...")
-        g.api.dataset.remove(g.dataset_id)
-        sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
-    output_title = f"{project.name}"
-else:
-    prefix_parts = []
-    if dataset_created:
-        prefix_parts.append("New ")
-    if project_created:
-        g.dataset_id = new_dataset_id
-        dataset = g.api.dataset.get_info_by_id(g.dataset_id)
-        project = g.api.project.get_info_by_id(dataset.project_id)
-        sly.logger.info("New project and dataset were created during import process.")
-        sly.logger.info(f"Project: '{project.name}' (ID: {project.id})")
-        sly.logger.info(f"Dataset: '{dataset.name}' (ID: {dataset.id})")
-    if "dataset" not in dataset.name.lower():
-        prefix_parts.append("Dataset: ")
+        prefix = "".join(prefix_parts)
+        output_title = f"{project.name}. {prefix}{dataset.name}".strip()
 
-    prefix = "".join(prefix_parts)
-    output_title = f"{project.name}. {prefix}{dataset.name}".strip()
-
-if isinstance(importer.converter, NiiPlaneStructuredAnnotationConverter):
-    if dataset_created:
-        sly.logger.info("Cleaning up unused dataset...")
-        g.api.dataset.remove(g.dataset_id)
-        sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
+    if isinstance(converter, NiiPlaneStructuredAnnotationConverter):
+        if dataset_created:
+            sly.logger.info("Cleaning up unused dataset...")
+            g.api.dataset.remove(g.dataset_id)
+            sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
 
 # * 4. Set output project
 g.api.task.set_output_project(g.task_id, project.id, output_title)
