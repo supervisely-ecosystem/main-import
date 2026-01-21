@@ -24,7 +24,6 @@ The application supports various modalities and formats, it will automatically d
 ## Application key features:
 
 1.  <b style="font-weight: 600; flex: none;" class="mr5">Image datasets:</b>
-
     - Auto-detect annotations in
       <span>
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/images/supervisely.md">Supervisely</a><span> | </span>
@@ -43,7 +42,6 @@ The application supports various modalities and formats, it will automatically d
     - Images in any directory structure without annotations.
 
 2.  <b style="font-weight: 600; flex: none;" class="mr5">Video datasets:</b>
-
     - Auto-detect annotations in
       <span>
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/videos/supervisely.md">Supervisely</a><span> | </span>
@@ -52,21 +50,18 @@ The application supports various modalities and formats, it will automatically d
     - Videos in any directory structure without annotations.
 
 3.  <b style="font-weight: 600; flex: none;" class="mr5">Point clouds datasets:</b>
-
     - Auto-detect annotations in
       <span>
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/point_cloud/supervisely.md">Supervisely</a></span> format.
     - Point clouds in any directory structure without annotations in `PCD`, `LAS`, `LAZ`, `PLY` formats.
 
 4.  <b style="font-weight: 600; flex: none;" class="mr5">Point clouds episodes datasets:</b>
-
     - Auto-detect annotations in
       <span>
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/point_cloud_episodes/supervisely.md">Supervisely</a></span> format.
     - Point cloud episodes without annotations in `PCD` format.
 
 5.  <b style="font-weight: 600; flex: none;" class="mr5">Volumes datasets:</b>
-
     - Auto-detect annotations in
       <span>
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/volumes/supervisely.md">Supervisely</a></span> format.

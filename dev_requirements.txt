@@ -1,4 +1,4 @@
-git+https://github.com/supervisely/supervisely.git@autoimport-nested-datasets-refactor
+git+https://github.com/supervisely/supervisely.git@nested-pcd-upload-multiple-converters
 
 # for coco dataset
 pycocotools
