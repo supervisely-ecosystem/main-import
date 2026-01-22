@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from typing import Tuple
 
 import src.globals as g
 import supervisely as sly
@@ -91,7 +92,7 @@ def _default_project_name(input_paths) -> str:
 
 def create_project_and_dataset(
     modality: ProjectType, dataset_name: str, input_paths
-) -> tuple[sly.ProjectInfo, sly.DatasetInfo]:
+) -> Tuple[sly.ProjectInfo, sly.DatasetInfo]:
     project_name = _default_project_name(input_paths)
     project = g.api.project.create(
         g.workspace_id,
