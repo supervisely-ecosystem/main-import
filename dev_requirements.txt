@@ -1,5 +1,5 @@
-# git+https://github.com/supervisely/supervisely.git@branch-name
-supervisely==6.73.511
+#git+https://github.com/supervisely/supervisely.git@branch-name
+supervisely==6.73.513
 
 # for coco dataset
 pycocotools
@@ -8,8 +8,8 @@ pycocotools
 # scikit-learn==0.24.1
 
 # for las/laz
-laspy==2.0.1
-lazrs==0.4.0
+laspy[lazrs]==2.0.1
+pypcd4==1.4.3
 
 # for DCM files without extensions
 gdcm==1.1
