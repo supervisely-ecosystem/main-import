@@ -1,29 +1,28 @@
 #git+https://github.com/supervisely/supervisely.git@branch-name
-supervisely==6.73.530
+# supervisely==6.73.542
 
 # for coco dataset
-pycocotools
+pycocotools==2.0.11
 
-# open3d==0.11.1
 # scikit-learn==0.24.1
 
 # for las/laz
-laspy[lazrs]==2.0.1
+laspy[lazrs]==2.7.0
 pypcd4==1.4.3
 
 # for DCM files without extensions
-gdcm==1.1
-pylibjpeg==1.4.0
-pylibjpeg-libjpeg==1.3.1
+python-gdcm==3.2.2
+pylibjpeg==2.1.0
+pylibjpeg-libjpeg==2.4.0
 
 # for pdf
-pymupdf==1.22.5
+pymupdf==1.27.2
 
 # for multispectral images
-tifffile==2023.7.10
+tifffile==2026.3.3
 
 # for NIfTI
-nibabel==5.2.1
+nibabel==5.4.0
 
 # for LYFT
 lyft-dataset-sdk==0.0.8
@@ -32,7 +31,7 @@ lyft-dataset-sdk==0.0.8
 bagpy==0.5
 
 # for NuScenes
-nuscenes-devkit==1.1.11
+nuscenes-devkit==1.2.0
 
 # for KITTI 3D
 open3d==0.19.0
