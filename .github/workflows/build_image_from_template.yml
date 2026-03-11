@@ -13,4 +13,5 @@ jobs:
     with:
       image_name: "${{ github.event.repository.name }}"
       tag_version: "${{ github.event.inputs.tag_version }}"
+      dockerfile_template_path: "docker/Dockerfile.tmpl"
       cve_checks: true

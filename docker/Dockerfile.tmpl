@@ -1,0 +1,93 @@
+ARG tag_ref_name
+ARG REQUIREMENTS_FILE=dev_requirements.txt
+ARG RUNTIME_BASE_IMAGE=base-py-sdk-hardened
+ARG EXTRA_BUILDER_LIBS=""
+ARG OPEN3D_GIT_URL=https://github.com/isl-org/Open3D.git
+ARG OPEN3D_GIT_REF=main
+
+FROM python:3.14-slim-bookworm AS requirements-builder
+
+ARG REQUIREMENTS_FILE
+ARG EXTRA_BUILDER_LIBS
+ARG OPEN3D_GIT_URL
+ARG OPEN3D_GIT_REF
+RUN set -eux; \
+  apt-get update; \
+  apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    cmake \
+    git \
+    ninja-build \
+    pkg-config \
+    ${EXTRA_BUILDER_LIBS}; \
+  rm -rf /var/lib/apt/lists/*
+
+COPY ${REQUIREMENTS_FILE} /tmp/requirements.txt
+
+RUN set -eux; \
+  python -m venv /opt/venv; \
+  /opt/venv/bin/python -m ensurepip --upgrade; \
+  /opt/venv/bin/python -m pip install --no-cache-dir --upgrade pip wheel setuptools; \
+  if [ -s /tmp/requirements.txt ]; then \
+    grep -Eiv '^\s*open3d(\s*[<>=!~].*)?\s*$' /tmp/requirements.txt > /tmp/requirements-no-open3d.txt || true; \
+    if [ -s /tmp/requirements-no-open3d.txt ]; then \
+      /opt/venv/bin/python -m pip wheel --no-cache-dir -r /tmp/requirements-no-open3d.txt -w /tmp/wheels; \
+    else \
+      mkdir -p /tmp/wheels; \
+    fi; \
+  else \
+    mkdir -p /tmp/wheels; \
+  fi; \
+  git clone --depth 1 --branch "${OPEN3D_GIT_REF}" "${OPEN3D_GIT_URL}" /tmp/Open3D; \
+  /opt/venv/bin/python -m pip install --no-cache-dir -r /tmp/Open3D/python/requirements_build.txt; \
+  cmake -S /tmp/Open3D -B /tmp/Open3D/build -GNinja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DBUILD_UNIT_TESTS=OFF \
+    -DBUILD_BENCHMARKS=OFF \
+    -DBUILD_EXAMPLES=OFF \
+    -DBUILD_PYTHON_MODULE=ON \
+    -DBUILD_JUPYTER_EXTENSION=OFF \
+    -DBUILD_WEBRTC=OFF \
+    -DBUILD_TENSORFLOW_OPS=OFF \
+    -DBUILD_PYTORCH_OPS=OFF \
+    -DPython3_EXECUTABLE=/opt/venv/bin/python; \
+  cmake --build /tmp/Open3D/build --target pip-package --parallel; \
+  cp /tmp/Open3D/build/lib/python_package/pip_package/open3d*.whl /tmp/wheels/; \
+  rm -rf /tmp/Open3D /tmp/requirements-no-open3d.txt
+
+FROM supervisely/${RUNTIME_BASE_IMAGE}:${tag_ref_name} AS runtime
+
+ARG REQUIREMENTS_FILE
+
+COPY ${REQUIREMENTS_FILE} /tmp/requirements.txt
+
+RUN --mount=from=requirements-builder,source=/tmp/wheels,target=/tmp/wheels,ro \
+  set -eux; \
+  export PYTHONDONTWRITEBYTECODE=1; \
+  if [ -s /tmp/requirements.txt ]; then \
+    /opt/venv/bin/python -m ensurepip --upgrade; \
+    set -- /tmp/wheels/*.whl; \
+    if [ -e "$1" ]; then \
+      /opt/venv/bin/python -m pip install --no-cache-dir --no-compile --no-index /tmp/wheels/*.whl; \
+      rm -rf \
+        /opt/venv/lib/python*/site-packages/pip* \
+        /opt/venv/lib/python*/site-packages/setuptools* \
+        /opt/venv/lib/python*/site-packages/wheel* \
+        /opt/venv/lib/python*/site-packages/pkg_resources* \
+        /opt/venv/lib/python*/site-packages/_distutils_hack* \
+        /opt/venv/lib/python*/site-packages/_distutils* \
+        /opt/venv/lib/python*/site-packages/distutils-precedence.pth \
+        /opt/venv/bin/pip \
+        /opt/venv/bin/pip3 \
+        /opt/venv/bin/pip3.* \
+        /opt/venv/bin/easy_install \
+        /opt/venv/bin/easy_install-* \
+        /opt/venv/bin/wheel; \
+    fi; \
+  fi; \
+  find /opt/venv -type d -name '__pycache__' -prune -exec rm -rf {} +; \
+  find /opt/venv -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete; \
+  find /opt/venv/lib/python*/site-packages -type d \( -name 'tests' -o -name 'test' \) -prune -exec rm -rf {} +; \
+  rm -rf /tmp/requirements.txt
