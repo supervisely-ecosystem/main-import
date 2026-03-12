@@ -2,15 +2,18 @@ ARG tag_ref_name
 ARG REQUIREMENTS_FILE=dev_requirements.txt
 ARG RUNTIME_BASE_IMAGE=base-py-sdk-hardened
 ARG EXTRA_BUILDER_LIBS=""
-ARG OPEN3D_GIT_URL=https://github.com/isl-org/Open3D.git
-ARG OPEN3D_GIT_REF=main
 
-FROM python:3.14-slim-bookworm AS requirements-builder
+FROM python:3.12-slim-bookworm AS requirements-builder
+
+ENV LANG=C.UTF-8 \
+  PYTHONDONTWRITEBYTECODE=1 \
+  PYTHONUNBUFFERED=1 \
+  PIP_DISABLE_PIP_VERSION_CHECK=1 \
+  PIP_NO_CACHE_DIR=1 \
+  PIP_PREFER_BINARY=1
 
 ARG REQUIREMENTS_FILE
 ARG EXTRA_BUILDER_LIBS
-ARG OPEN3D_GIT_URL
-ARG OPEN3D_GIT_REF
 RUN set -eux; \
   apt-get update; \
   apt-get install -y --no-install-recommends \
@@ -30,35 +33,18 @@ RUN set -eux; \
   python -m venv /opt/venv; \
   /opt/venv/bin/python -m ensurepip --upgrade; \
   /opt/venv/bin/python -m pip install --no-cache-dir --upgrade pip wheel setuptools; \
+  /opt/venv/bin/python -m pip install --no-cache-dir numpy; \
   if [ -s /tmp/requirements.txt ]; then \
-    grep -Eiv '^\s*open3d(\s*[<>=!~].*)?\s*$' /tmp/requirements.txt > /tmp/requirements-no-open3d.txt || true; \
-    if [ -s /tmp/requirements-no-open3d.txt ]; then \
-      /opt/venv/bin/python -m pip wheel --no-cache-dir --no-build-isolation -r /tmp/requirements-no-open3d.txt -w /tmp/wheels; \
-    else \
-      mkdir -p /tmp/wheels; \
-    fi; \
+    /opt/venv/bin/python -m pip wheel --no-cache-dir --no-build-isolation -r /tmp/requirements.txt -w /tmp/wheels; \
   else \
     mkdir -p /tmp/wheels; \
-  fi; \
-  git clone --depth 1 --branch "${OPEN3D_GIT_REF}" "${OPEN3D_GIT_URL}" /tmp/Open3D; \
-  /opt/venv/bin/python -m pip install --no-cache-dir -r /tmp/Open3D/python/requirements_build.txt; \
-  cmake -S /tmp/Open3D -B /tmp/Open3D/build -GNinja \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_SHARED_LIBS=OFF \
-    -DBUILD_UNIT_TESTS=OFF \
-    -DBUILD_BENCHMARKS=OFF \
-    -DBUILD_EXAMPLES=OFF \
-    -DBUILD_PYTHON_MODULE=ON \
-    -DBUILD_JUPYTER_EXTENSION=OFF \
-    -DBUILD_WEBRTC=OFF \
-    -DBUILD_TENSORFLOW_OPS=OFF \
-    -DBUILD_PYTORCH_OPS=OFF \
-    -DPython3_EXECUTABLE=/opt/venv/bin/python; \
-  cmake --build /tmp/Open3D/build --target pip-package --parallel; \
-  cp /tmp/Open3D/build/lib/python_package/pip_package/open3d*.whl /tmp/wheels/; \
-  rm -rf /tmp/Open3D /tmp/requirements-no-open3d.txt
+  fi
 
-FROM supervisely/${RUNTIME_BASE_IMAGE}:${tag_ref_name} AS runtime
+FROM python:3.12-slim-bookworm AS runtime
+
+ENV LANG=C.UTF-8 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 ARG REQUIREMENTS_FILE
 
@@ -66,7 +52,21 @@ COPY ${REQUIREMENTS_FILE} /tmp/requirements.txt
 
 RUN --mount=from=requirements-builder,source=/tmp/wheels,target=/tmp/wheels,ro \
   set -eux; \
-  export PYTHONDONTWRITEBYTECODE=1; \
+  ln -sf /usr/local/bin/python3 /usr/local/bin/python; \
+  ln -sf /usr/local/bin/python3 /usr/bin/python; \
+  apt-get update; \
+  apt-get install -y --no-install-recommends \
+    libglib2.0-0 \
+    libgl1 \
+    libmagic1 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    libxcb1 \
+    libx11-6 \
+    libgeos-c1v5 \
+    ffmpeg; \
+  python -m venv /opt/venv; \
   if [ -s /tmp/requirements.txt ]; then \
     /opt/venv/bin/python -m ensurepip --upgrade; \
     set -- /tmp/wheels/*.whl; \
@@ -88,7 +88,29 @@ RUN --mount=from=requirements-builder,source=/tmp/wheels,target=/tmp/wheels,ro \
         /opt/venv/bin/wheel; \
     fi; \
   fi; \
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /usr/bin/apt \
+    /usr/bin/apt-get \
+    /usr/bin/apt-cache \
+    /usr/bin/apt-mark \
+    /usr/bin/apt-key \
+    /usr/bin/dpkg \
+    /usr/bin/dpkg-deb \
+    /usr/bin/dpkg-query \
+    /usr/bin/dpkg-divert \
+    /usr/bin/git \
+    /usr/bin/curl \
+    /usr/bin/wget \
+    /usr/local/lib/python3.12/site-packages/pip* \
+    /usr/local/lib/python3.12/site-packages/setuptools* \
+    /usr/local/lib/python3.12/site-packages/wheel* \
+    /usr/local/lib/python3.12/site-packages/pkg_resources* \
+    /usr/local/lib/python3.12/site-packages/_distutils* \
+    /usr/local/lib/python3.12/site-packages/distutils-precedence.pth; \
   find /opt/venv -type d -name '__pycache__' -prune -exec rm -rf {} +; \
   find /opt/venv -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete; \
   find /opt/venv/lib/python*/site-packages -type d \( -name 'tests' -o -name 'test' \) -prune -exec rm -rf {} +; \
   rm -rf /tmp/requirements.txt
+
+ENV PATH="/opt/venv/bin:$PATH"
