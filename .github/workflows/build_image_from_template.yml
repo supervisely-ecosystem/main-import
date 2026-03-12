@@ -15,3 +15,4 @@ jobs:
       tag_version: "${{ github.event.inputs.tag_version }}"
       dockerfile_template_path: "docker/Dockerfile.tmpl"
       cve_checks: true
+      skip_tag_check: true
