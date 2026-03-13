@@ -1,5 +1,5 @@
 #git+https://github.com/supervisely/supervisely.git@branch-name
-supervisely==6.73.545
+supervisely==6.73.548
 
 # for coco dataset
 pycocotools==2.0.11
