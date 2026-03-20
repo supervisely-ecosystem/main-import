@@ -73,16 +73,16 @@ RUN --mount=from=requirements-builder,source=/tmp/wheels,target=/tmp/wheels,ro \
     if [ -e "$1" ]; then \
       /opt/venv/bin/python -m pip install --no-cache-dir --no-compile --no-index /tmp/wheels/*.whl; \
       rm -rf \
-        /opt/venv/lib/python*/site-packages/pip* \
+        # /opt/venv/lib/python*/site-packages/pip* \
         /opt/venv/lib/python*/site-packages/setuptools* \
         /opt/venv/lib/python*/site-packages/wheel* \
         /opt/venv/lib/python*/site-packages/pkg_resources* \
         /opt/venv/lib/python*/site-packages/_distutils_hack* \
         /opt/venv/lib/python*/site-packages/_distutils* \
         /opt/venv/lib/python*/site-packages/distutils-precedence.pth \
-        /opt/venv/bin/pip \
-        /opt/venv/bin/pip3 \
-        /opt/venv/bin/pip3.* \
+        # /opt/venv/bin/pip \
+        # /opt/venv/bin/pip3 \
+        # /opt/venv/bin/pip3.* \
         /opt/venv/bin/easy_install \
         /opt/venv/bin/easy_install-* \
         /opt/venv/bin/wheel; \

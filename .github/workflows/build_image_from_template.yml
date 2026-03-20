@@ -4,6 +4,10 @@ run-name: Manual Build App Image for "${{ github.event.repository.name }}"
 on:
   workflow_dispatch:
     inputs:
+      image_name:
+        description: "Image name to build"
+        required: false
+        default: "${{ github.event.repository.name }}"
       tag_version:
         description: "Tag version to build image for"
         required: false
@@ -11,7 +15,7 @@ jobs:
   build-image:
     uses: supervisely-ecosystem/workflows/.github/workflows/build_image_from_template.yml@master
     with:
-      image_name: "${{ github.event.repository.name }}"
+      image_name: "${{ github.event.inputs.image_name }}"
       tag_version: "${{ github.event.inputs.tag_version }}"
       dockerfile_template_path: "docker/Dockerfile.tmpl"
       cve_checks: true
