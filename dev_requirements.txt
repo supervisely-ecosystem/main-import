@@ -1,4 +1,4 @@
-#git+https://github.com/supervisely/supervisely.git@branch-name
+# git+https://github.com/supervisely/supervisely.git@hcd
 supervisely==6.73.548
 
 # for coco dataset
