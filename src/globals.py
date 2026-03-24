@@ -1,6 +1,8 @@
 import datetime
 import os
 
+import pkg_resources
+
 from dotenv import load_dotenv
 
 import supervisely as sly
@@ -12,6 +14,12 @@ if sly.is_development():
 
 api = sly.Api()
 workflow = Workflow(api)
+
+try:
+    _sly_version = pkg_resources.get_distribution("supervisely").version
+except pkg_resources.DistributionNotFound:
+    _sly_version = "unknown"
+sly.logger.info(f"Supervisely SDK version: {_sly_version}")
 
 app_data = sly.app.get_data_dir()
 sly.fs.clean_dir(app_data)
