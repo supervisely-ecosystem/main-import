@@ -1,7 +1,6 @@
 import datetime
 import os
-
-import pkg_resources
+import subprocess
 
 from dotenv import load_dotenv
 
@@ -16,8 +15,14 @@ api = sly.Api()
 workflow = Workflow(api)
 
 try:
-    _sly_version = pkg_resources.get_distribution("supervisely").version
-except pkg_resources.DistributionNotFound:
+    _sly_version = subprocess.check_output(
+        ["pip", "show", "supervisely"], text=True, stderr=subprocess.DEVNULL
+    )
+    _sly_version = next(
+        (line.split(": ", 1)[1].strip() for line in _sly_version.splitlines() if line.startswith("Version:")),
+        "unknown",
+    )
+except Exception:
     _sly_version = "unknown"
 sly.logger.info(f"Supervisely SDK version: {_sly_version}")
 
