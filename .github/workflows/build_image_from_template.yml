@@ -7,12 +7,22 @@ on:
       tag_version:
         description: "Tag version to build image for"
         required: false
+      enable_cve_checks:
+        description: "Enable CVE checks during image build"
+        required: false
+        type: boolean
+        default: true
+      skip_tag_check:
+        description: "Skip tag existence check before building image"
+        required: false
+        type: boolean
+        default: false
 jobs:
   build-image:
     uses: supervisely-ecosystem/workflows/.github/workflows/build_image_from_template.yml@master
     with:
       image_name: "${{ github.event.repository.name }}"
-      tag_version: "${{ github.event.inputs.tag_version }}"
+      tag_version: "${{ inputs.tag_version }}"
       dockerfile_template_path: "docker/Dockerfile.tmpl"
-      cve_checks: true
-      skip_tag_check: true
+      cve_checks: ${{ inputs.enable_cve_checks }}
+      skip_tag_check: ${{ inputs.skip_tag_check }}
