@@ -22,7 +22,7 @@ jobs:
     uses: supervisely-ecosystem/workflows/.github/workflows/build_image_from_template.yml@master
     with:
       image_name: "${{ github.event.repository.name }}"
-      tag_version: "${{ github.event.inputs.tag_version }}"
+      tag_version: "${{ inputs.tag_version }}"
       dockerfile_template_path: "docker/Dockerfile.tmpl"
-      cve_checks: ${{ github.event.inputs.enable_cve_checks }}
-      skip_tag_check: ${{ github.event.inputs.skip_tag_check }}
+      cve_checks: ${{ inputs.enable_cve_checks }}
+      skip_tag_check: ${{ inputs.skip_tag_check }}
