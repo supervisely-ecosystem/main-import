@@ -51,6 +51,8 @@ ARG REQUIREMENTS_FILE
 
 COPY ${REQUIREMENTS_FILE} /tmp/requirements.txt
 
+ARG CACHEBUST=""
+
 RUN --mount=from=requirements-builder,source=/tmp/wheels,target=/tmp/wheels,ro \
   set -eux; \
   ln -sf /usr/local/bin/python3 /usr/local/bin/python; \
