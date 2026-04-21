@@ -33,5 +33,6 @@ bagpy==0.4.10
 # for NuScenes
 nuscenes-devkit==1.2.0
 
-# for KITTI 3D
+# for KITTI 3D & KITTI 360
 open3d==0.19.0
+git+https://github.com/autonomousvision/kitti360Scripts.git
