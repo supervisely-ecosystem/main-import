@@ -1,5 +1,5 @@
-# git+https://github.com/supervisely/supervisely.git@overlay-import
-supervisely==6.73.565
+git+https://github.com/supervisely/supervisely.git@meshes
+# supervisely==6.73.565
 
 # for coco dataset
 pycocotools==2.0.11
