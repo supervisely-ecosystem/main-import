@@ -1,5 +1,5 @@
 git+https://github.com/supervisely/supervisely.git@point-cloud-new-file-types
-supervisely==6.73.559
+# supervisely==6.73.559
 
 # for coco dataset
 pycocotools==2.0.11
