@@ -28,7 +28,7 @@ nibabel==5.4.0
 lyft-dataset-sdk==0.0.8
 
 # for ROSBAG
-bagpy==0.4.10
+bagpy==0.5
 
 # for NuScenes
 nuscenes-devkit==1.2.0
