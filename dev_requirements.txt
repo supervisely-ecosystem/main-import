@@ -28,7 +28,9 @@ nibabel==5.4.0
 lyft-dataset-sdk==0.0.8
 
 # for ROSBAG
-bagpy==0.5
+bagpy==0.4.10
+m2r2==0.3.1  # 0.3.2+ hard-pins mistune==0.8.4 (CVE-2026-44708); 0.3.1 has no pin
+mistune>=3.2.1  # force patched version, avoid CVE-2026-44708/44896/44897
 
 # for NuScenes
 nuscenes-devkit==1.2.0
