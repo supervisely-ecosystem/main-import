@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-DOCKER_IMAGE_NAME="supervisely/main-import:0.0.2-test"
+DOCKER_IMAGE_NAME="supervisely/main-import:0.0.3-test"
 
 # Determine script and project root directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
