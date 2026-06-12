@@ -72,12 +72,20 @@ The application supports various modalities and formats, it will automatically d
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/volumes/supervisely.md">Supervisely</a></span> format.
     - Volumes in any directory structure without annotations in `DICOM`, `NRRD` formats.
 
-6.  The application supports various sources: <span>Drag & Drop</span> | <span>Team Files</span> | <span>Agent Storage</span> | <span>Cloud Storage.</span>
+6.  <b style="font-weight: 600; flex: none;" class="mr5">Mesh datasets:</b>
 
-7.  It will automatically detect the format of the files and import them.
-8.  If no format is detected, the application will import only items without annotations.
-9.  You can import data into a new or existing project or dataset.
-10. You can specify only 1 format for the import.
+    - Auto-detect annotations in
+      <span>
+      <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/meshes/supervisely.md">Supervisely</a><span> | </span>
+      <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/meshes/per_vertex.md">Per-Vertex Annotation</a></span> formats.
+    - Meshes in any directory structure without annotations in `PLY`, `STL`, `OBJ` formats.
+
+7.  The application supports various sources: <span>Drag & Drop</span> | <span>Team Files</span> | <span>Agent Storage</span> | <span>Cloud Storage.</span>
+
+8.  It will automatically detect the format of the files and import them.
+9.  If no format is detected, the application will import only items without annotations.
+10. You can import data into a new or existing project or dataset.
+11. You can specify only 1 format for the import.
 
 ## Need Help?
 
