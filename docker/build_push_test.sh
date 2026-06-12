@@ -9,7 +9,7 @@ PROJECT_ROOT="$(realpath "$SCRIPT_DIR/..")"
 
 
 # Set SDK version
-SDK_VER=6.73.580
+SDK_VER=6.74.0
 
 
 # Always use project root as build context, and correct relative paths
