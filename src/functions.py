@@ -1,17 +1,16 @@
-import src.globals as g
 import supervisely as sly
 from supervisely.io.exception_handlers import ErrorHandler
 from supervisely.project.project_settings import LabelingInterface
 from supervisely.project.project_type import _MULTISPECTRAL_TAG_NAME
 
 
-def get_project_settings(project_id: int) -> sly.ProjectSettings:
-    project_meta = sly.ProjectMeta.from_json(g.api.project.get_meta(project_id))
+def get_project_settings(api: sly.Api, project_id: int) -> sly.ProjectSettings:
+    project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
     return project_meta.project_settings
 
 
-def get_labeling_interface(project: sly.ProjectInfo) -> str:
-    project_settings = get_project_settings(project.id)
+def get_labeling_interface(api: sly.Api, project: sly.ProjectInfo) -> str:
+    project_settings = get_project_settings(api, project.id)
     import_settings = project.import_settings
     labeling_interface = None
     if import_settings and isinstance(import_settings, dict):
@@ -30,6 +29,7 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
     from supervisely.io.exception_handlers import (
         handle_exception as sly_handle_exception,
     )
+    import src.globals as g
 
     sly.fs.clean_dir(g.app_data)
 
