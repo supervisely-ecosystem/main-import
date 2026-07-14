@@ -20,7 +20,8 @@ jobs:
     uses: supervisely-ecosystem/workflows/.github/workflows/build_image_from_template.yml@master
     with:
       image_name: "main-import-cli"
-      dockerfile_template_path: "docker/Dockerfile.cli.tmpl"
+      dockerfile_template_path: "docker/Dockerfile.tmpl"
+      docker_target: "cli"
       cve_checks: true
       latest_tag: true
   Supervisely-Release:
