@@ -32,3 +32,15 @@ jobs:
       cve_checks: ${{ inputs.enable_cve_checks }}
       skip_tag_check: ${{ inputs.skip_tag_check }}
       no_cache_requirements: ${{ inputs.no_cache_requirements }}
+  build-cli-image:
+    needs: build-image
+    uses: supervisely-ecosystem/workflows/.github/workflows/build_image_from_template.yml@master
+    with:
+      image_name: "main-import-cli"
+      tag_version: "${{ inputs.tag_version }}"
+      dockerfile_template_path: "docker/Dockerfile.tmpl"
+      docker_target: "cli"
+      cve_checks: ${{ inputs.enable_cve_checks }}
+      skip_tag_check: ${{ inputs.skip_tag_check }}
+      latest_tag: true
+      no_cache_requirements: ${{ inputs.no_cache_requirements }}

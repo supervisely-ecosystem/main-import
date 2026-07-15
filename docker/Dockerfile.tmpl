@@ -117,3 +117,16 @@ RUN --mount=from=requirements-builder,source=/tmp/wheels,target=/tmp/wheels,ro \
   rm -rf /tmp/requirements.txt
 
 ENV PATH="/opt/venv/bin:$PATH"
+
+FROM runtime AS cli
+
+WORKDIR /app
+
+COPY src /app/src
+
+ENV PYTHONPATH="/app" \
+    SLY_APP_DATA_DIR="/tmp/sly-import-work"
+
+ENTRYPOINT ["python", "-m", "src.cli"]
+
+FROM runtime AS app-runtime

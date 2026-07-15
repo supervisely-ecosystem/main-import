@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "categories": ["system", "import"],
   "system": true,
-  "description": "Universal import tool for Images, Videos, Pointclouds, Volumes and Meshes",
+  "description": "Universal import tool for Images, Videos, Pointclouds, and Volumes",
   "docker_image": "supervisely/main-import:6.74.10",
   "min_instance_version": "6.17.8",
   "main_script": "src/main.py",
