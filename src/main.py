@@ -13,7 +13,7 @@ try:
     labeling_interface = f.get_labeling_interface(project)
     dataset = None
     dataset_created = False
-    project_created = False
+    project_created_by_importer = False
     if g.dataset_id:
         dataset = g.api.dataset.get_info_by_id(g.dataset_id)
     if dataset is None:
@@ -36,13 +36,51 @@ try:
         upload_as_links=g.import_as_links,
     )
 except Exception as e:
-    f.handle_exception_and_stop(e, "Format was not recognized")
+    if not f.is_no_modality_items_error(e):
+        f.handle_exception_and_stop(e, "Format was not recognized")
+    sly.logger.info(
+        "No modality items detected for the selected project. "
+        "Attempting to autodetect modality and format."
+    )
+    try:
+        autodetected_importer = f.autodetect_importer(
+            g.input_paths,
+            g.import_as_links,
+            excluded_modality=g.project_modality,
+        )
+    except Exception as autodetect_exc:
+        f.handle_exception_and_stop(autodetect_exc, "Format was not recognized")
+
+    if autodetected_importer is None:
+        f.handle_exception_and_stop(e, "Format was not recognized")
+
+    importer = autodetected_importer
+
+    if dataset_created:
+        sly.logger.info("Cleaning up unused dataset...")
+        g.api.dataset.remove(g.dataset_id)
+        sly.logger.info(f"Dataset '{dataset.name}' was removed. ")
+
+    project, dataset = f.create_project_and_dataset(
+        importer.modality,
+        g.dataset_name,
+        g.input_paths,
+    )
+    g.project_modality = project.type
+    g.dataset_id = dataset.id
+    dataset_created = True
+    labeling_interface = f.get_labeling_interface(project)
+    sly.logger.info(
+        "Autodetected modality and created a new project. "
+        f"Project: '{project.name}' (ID: {project.id}), "
+        f"Dataset: '{dataset.name}' (ID: {dataset.id})."
+    )
 
 # * 3 Convert and upload data
 try:
     new_dataset_id = importer.upload_dataset(g.dataset_id)
     if new_dataset_id is not None:
-        project_created = True
+        project_created_by_importer = True
 except Exception as e:
     f.handle_exception_and_stop(e, "Failed to convert and upload data. Please, check the logs")
 
@@ -61,7 +99,7 @@ else:
     prefix_parts = []
     if dataset_created:
         prefix_parts.append("New ")
-    if project_created:
+    if project_created_by_importer:
         g.dataset_id = new_dataset_id
         dataset = g.api.dataset.get_info_by_id(g.dataset_id)
         project = g.api.project.get_info_by_id(dataset.project_id)

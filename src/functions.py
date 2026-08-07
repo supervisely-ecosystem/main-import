@@ -1,8 +1,12 @@
+import os
+from datetime import datetime
+from typing import Tuple
+
 import src.globals as g
 import supervisely as sly
 from supervisely.io.exception_handlers import ErrorHandler
 from supervisely.project.project_settings import LabelingInterface
-from supervisely.project.project_type import _MULTISPECTRAL_TAG_NAME
+from supervisely.project.project_type import _MULTISPECTRAL_TAG_NAME, ProjectType
 
 
 def get_project_settings(project_id: int) -> sly.ProjectSettings:
@@ -58,3 +62,77 @@ def handle_exception_and_stop(exc: Exception, msg: str = "Error"):
         exc_str = str(exc) if isinstance(exc, RuntimeError) else repr(exc)  # for better logging
         sly.logger.error(f"{msg}. {exc_str}", extra=debug_info, exc_info=True)
     exit(0)
+
+
+def is_no_modality_items_error(exc: Exception) -> bool:
+    msg = str(exc)
+    return (
+        "Not found any" in msg
+        or "Please refer to the app overview" in msg
+        or "Unsupported file extensions detected" in msg
+    )
+
+
+def _default_project_name(input_paths) -> str:
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+
+    if isinstance(input_paths, (list, tuple)):
+        if len(input_paths) == 1:
+            base = os.path.basename(str(input_paths[0]).rstrip("/"))
+        else:
+            base = timestamp
+    else:
+        base = os.path.basename(str(input_paths).rstrip("/"))
+    if base == "":
+        base = timestamp
+
+    existing_names = {p.name for p in g.api.project.get_list(g.workspace_id)}
+    return sly.generate_free_name(existing_names, base, False, True)
+
+
+def create_project_and_dataset(
+    modality: ProjectType, dataset_name: str, input_paths
+) -> Tuple[sly.ProjectInfo, sly.DatasetInfo]:
+    project_name = _default_project_name(input_paths)
+    project = g.api.project.create(
+        g.workspace_id,
+        project_name,
+        change_name_if_conflict=True,
+        type=modality,
+    )
+    dataset = g.api.dataset.create(project.id, dataset_name, change_name_if_conflict=True)
+    return project, dataset
+
+
+def autodetect_importer(
+    input_paths,
+    upload_as_links: bool,
+    excluded_modality: ProjectType = None,
+) -> sly.ImportManager:
+    detected_importers = []
+    for modality in ProjectType:
+        if excluded_modality is not None and str(modality) == str(excluded_modality):
+            continue
+        try:
+            importer = sly.ImportManager(
+                input_paths,
+                modality,
+                labeling_interface=LabelingInterface.DEFAULT,
+                upload_as_links=upload_as_links,
+            )
+        except Exception as e:
+            sly.logger.debug(f"Autodetect failed for modality {modality}: {repr(e)}")
+            continue
+        if importer.converter.items_count == 0:
+            continue
+        detected_importers.append(importer)
+
+    if len(detected_importers) == 0:
+        return None
+    if len(detected_importers) > 1:
+        raise RuntimeError(
+            "Multiple modalities detected: "
+            f"{[str(i.modality) for i in detected_importers]}. "
+            "Please split your data and try again."
+        )
+    return detected_importers[0]
