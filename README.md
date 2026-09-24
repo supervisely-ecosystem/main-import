@@ -80,12 +80,19 @@ The application supports various modalities and formats, it will automatically d
       <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/meshes/per_vertex.md">Per-Vertex Annotation</a></span> formats.
     - Meshes in any directory structure without annotations in `PLY`, `STL`, `OBJ` formats.
 
-7.  The application supports various sources: <span>Drag & Drop</span> | <span>Team Files</span> | <span>Agent Storage</span> | <span>Cloud Storage.</span>
+7.  <b style="font-weight: 600; flex: none;" class="mr5">Audio datasets:</b>
 
-8.  It will automatically detect the format of the files and import them.
-9.  If no format is detected, the application will import only items without annotations.
-10. You can import data into a new or existing project or dataset.
-11. You can specify only 1 format for the import.
+    - Auto-detect annotations in
+      <span>
+      <a href="https://github.com/supervisely-ecosystem/import-wizard-docs/blob/master/converter_docs/audio/supervisely.md">Supervisely</a></span> format, including the project's spectrogram settings.
+    - Audio in any directory structure without annotations in `WAV`, `FLAC`, `MP3`, `OGG`, `M4A` formats.
+
+8.  The application supports various sources: <span>Drag & Drop</span> | <span>Team Files</span> | <span>Agent Storage</span> | <span>Cloud Storage.</span>
+
+9.  It will automatically detect the format of the files and import them.
+10. If no format is detected, the application will import only items without annotations.
+11. You can import data into a new or existing project or dataset.
+12. You can specify only 1 format for the import.
 
 ## Need Help?
 
