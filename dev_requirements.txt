@@ -1,5 +1,5 @@
 #git+https://github.com/supervisely/supervisely.git@meshes
-supervisely[audio]==6.74.44
+supervisely[audio]==6.74.46
 
 # for coco dataset
 pycocotools==2.0.11
