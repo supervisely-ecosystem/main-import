@@ -34,6 +34,8 @@ try:
         g.project_modality,
         labeling_interface=labeling_interface,
         upload_as_links=g.import_as_links,
+        folders_as_datasets=g.folders_as_datasets,
+        anonymize_dicom=g.anonymize_dicom,
     )
 except Exception as e:
     f.handle_exception_and_stop(e, "Format was not recognized")

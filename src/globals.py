@@ -36,6 +36,11 @@ project_id = sly.env.project_id()
 dataset_id = sly.env.dataset_id(raise_not_found=False)
 
 import_as_links = (os.environ.get("modal.state.importAsLinks", "false")).lower() == "true"
+# options of the SDK import (supervisely/supervisely#1825); unset keeps the SDK defaults
+_folders = os.environ.get("modal.state.foldersAsDatasets")
+folders_as_datasets = None if _folders is None else _folders.lower() == "true"
+_anonymize = os.environ.get("modal.state.anonymizeDicom")
+anonymize_dicom = None if _anonymize is None else _anonymize.lower() == "true"
 default_ds_name = f"dataset {datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')}"
 dataset_name = os.environ.get("modal.state.datasetName", default_ds_name)
 if dataset_name == "":
